@@ -3,20 +3,20 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
 import Login from '../screens/Login';
-import SignIn from '../screens/SignIn';
+import SignUp from '../screens/SignUp';
 import Main from '../screens/Main';
+import ForgotPassword from '../screens/ForgotPassword';
 
 const AppNavigator = createStackNavigator(
 	{
-    Login: Login,
-	  SignIn: {
-	  	screen: SignIn,
-	  	title: "Cadastro"
-	  },
-	  Main: Main
+		Login: Login,
+		SignUp: SignUp,
+		ForgotPassword: ForgotPassword,
+		Main: Main
 	},
   {
-    initialRouteName: "Login"
+	initialRouteName: "Login",
+	headerMode: 'none'
   }
 );
 

@@ -11,10 +11,16 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@eva-design/eva": "^1.0.1",
     "@expo/samples": "2.1.1",
+    "@ui-kitten/eva-icons": "^4.2.0-beta.1",
     "expo": "^32.0.0",
+    "expo-firebase-app": "^2.0.0",
+    "expo-firebase-firestore": "^2.0.0",
+    "firebase": "^6.6.0",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+    "react-native-ui-kitten": "^4.1.1",
     "react-navigation": "^3.8.1"
   },
   "devDependencies": {

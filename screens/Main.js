@@ -12,18 +12,18 @@ export default class Main extends React.Component {
 
 	render(){
 
-		const {navigation} = this.props;
-		const usertype = navigation.getParam('usertype', 0);
+		// const {navigation} = this.props;
+		// const usertype = navigation.getParam('usertype', 0);
 
-		if(usertype == 1){
-			return(
-					<ClientTabNavigator />
-			);	
-		}
-		if(usertype == 2){
+		// if(usertype == 1){
+		// 	return(
+		// 			<ClientTabNavigator />
+		// 	);	
+		// }
+		// if(usertype == 2){
 			return(
 					<MainTabNavigator />
 			);	
-		}
+		// }
 	}
 }

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "355946700353",
+    "firebase_url": "https://bicos-6a1f2.firebaseio.com",
+    "project_id": "bicos-6a1f2",
+    "storage_bucket": "bicos-6a1f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:355946700353:android:9c067b7dfb7ea1a44d70c0",
+        "android_client_info": {
+          "package_name": "com.ralves.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "355946700353-q54orlsfi5lkqfa2ld68mjt9eole70d2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApFoFXqYIs_ackfA8htYeOhXXeIWTpCsY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "355946700353-q54orlsfi5lkqfa2ld68mjt9eole70d2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
