@@ -3,6 +3,9 @@ import { mapping, light as lightTheme } from '@eva-design/eva';
 import { ApplicationProvider, Layout } from 'react-native-ui-kitten';
 import AppNavigator from './navigation/AppNavigator';
 import * as firebase from 'firebase';
+import {YellowBox} from 'react-native';
+
+YellowBox.ignoreWarnings(['Setting a timer']);
 
 const firebaseConfig = {
     apiKey: "AIzaSyCexIdHYZJtx-yEcmuUTjCANQFNixUfd94",

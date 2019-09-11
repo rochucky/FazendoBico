@@ -4,7 +4,7 @@ import { createStackNavigator, createBottomTabNavigator, createAppContainer } fr
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import JobsNavigator from './JobsNavigator';
 import SettingsScreen from '../screens/SettingsScreen';
 
 const HomeStack = createStackNavigator({
@@ -25,11 +25,13 @@ HomeStack.navigationOptions = {
   ),
 };
 
-const LinksStack = createStackNavigator({
-  Links: LinksScreen,
+const JobsStack = createStackNavigator({
+  Jobs: JobsNavigator,
+},{
+  headerMode: 'none'
 });
 
-LinksStack.navigationOptions = {
+JobsStack.navigationOptions = {
   tabBarLabel: 'Meus Bicos',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
@@ -37,7 +39,8 @@ LinksStack.navigationOptions = {
       name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
     />
   ),
-  title: 'Teste'
+  title: 'Teste',
+
 };
 
 const SettingsStack = createStackNavigator({
@@ -56,7 +59,7 @@ SettingsStack.navigationOptions = {
 
 const Tabs = createBottomTabNavigator({
   HomeStack,
-  LinksStack,
+  JobsStack,
   SettingsStack,
 });
 
