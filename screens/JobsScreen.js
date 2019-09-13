@@ -20,7 +20,7 @@ export default class JobsScreen extends React.Component {
     this.state = {
       email: '',
       items: [],
-      refreshing: false
+      refreshing: true
       
     }
 
@@ -33,12 +33,27 @@ export default class JobsScreen extends React.Component {
         .then((querySnapshot) => {
           const items = []
           querySnapshot.forEach((doc) => {
-              items.push(doc.data());
+              items.push({id: doc.id, data: doc.data()})
           })
-          this.setState({items: items});
+          this.setState({items: items})
+          this.setState({refreshing: false})
         })
 
       })
+  }
+
+  componentDidMount() {
+    //Here is the Trick
+    const { navigation } = this.props;
+    //Adding an event listner om focus
+    //So whenever the screen will have focus it will set the state to zero
+    this.focusListener = navigation.addListener('didFocus', () => {
+        this.setState({ count: 0 });
+    });
+  }
+  componentWillUnmount() {
+    // Remove the event listener before removing the screen from the stack
+    this.focusListener.remove();
   }
 
   render() {
@@ -51,26 +66,21 @@ export default class JobsScreen extends React.Component {
             return(
               <TouchableWithoutFeedback
                 onPress={() => {
-                  alert(item.name);
+                  this.props.navigation.push('JobDescription', {item: item});
                 }}
               >
-                <Layout 
-                  style={styles.listItem}
-                  onPress={() => {
-                    alert(item.name);
-                  }}
-                >
+                <Layout style={styles.listItem}>
                   <Layout style={styles.listItemHeader}>
                   <Text 
                     style={styles.listItemTitle}
                     category='h5'
-                  >{item.title}</Text>
+                  >{item.data.title}</Text>
                   <Text 
                     style={styles.listItemTitle}
                     category='h5'
-                  >{item.value}</Text>
+                  >{item.data.value}</Text>
                   </Layout>
-                  <Text style={styles.listItemDescription}>{item.description}</Text>
+                  <Text style={styles.listItemDescription}>{item.data.description}</Text>
                 </Layout>
               </TouchableWithoutFeedback>
             )
@@ -106,7 +116,7 @@ export default class JobsScreen extends React.Component {
         .then((querySnapshot) => {
           const items = []
           querySnapshot.forEach((doc) => {
-              items.push(doc.data());
+              items.push({id: doc.id, data: doc.data()})
           })
           this.setState({items: items});
           this.setState({refreshing: false});
@@ -118,15 +128,12 @@ export default class JobsScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingTop: 10
-  },
-  list: {
-    marginRight: 15,
-    marginLeft: 15
+    flex: 1
   },
   listItem: {
-
+    
+    marginRight: 15,
+    marginLeft: 15,
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 10,

@@ -3,11 +3,15 @@ import {
   Image,
   StyleSheet,
   AsyncStorage,
-  ActivityIndicator
+  ActivityIndicator,
+  YellowBox,
+  TouchableWithoutFeedback,
+  Alert,
+  BackHandler
 } from 'react-native';
 import { Layout, Text } from 'react-native-ui-kitten';
 import { SQLite } from 'expo';
-import {YellowBox} from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 import * as firebase from 'firebase';
 import firestore from 'firebase/firestore';
 
@@ -64,7 +68,18 @@ export default class HomeScreen extends React.Component {
             style={styles.content}
             category='h3'
           >à combinar conteúdo</Text>
-          
+          <Layout style={styles.logout}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                this.logout()
+              }}  
+            >
+              <FontAwesome 
+                size={40}
+                name={'power-off'} 
+              />
+            </TouchableWithoutFeedback>
+          </Layout>
         </Layout>
       )
     }
@@ -72,7 +87,27 @@ export default class HomeScreen extends React.Component {
   }
   
   logout = () => {
-    alert('teste');
+    Alert.alert(
+      'Exit App',
+      'Deseja fazer logout?', [{
+          text: 'Cancelar',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
+      }, {
+          text: 'OK',
+          onPress: () => {
+            db.transaction(tx => {
+              tx.executeSql(
+                'delete from config'
+              );
+            });
+            BackHandler.exitApp()
+          }
+      }, ], {
+          cancelable: false
+      }
+    )
+    return true;
   }
 
   _load = async () => {
@@ -81,6 +116,31 @@ export default class HomeScreen extends React.Component {
       this.setState({name: response[0][1]})
     })
   }
+
+  // handleBackButton = () => {
+  //   Alert.alert(
+  //     'Exit App',
+  //     'Deseja realmente Sair?', [{
+  //         text: 'Cancelar',
+  //         onPress: () => console.log('Cancel Pressed'),
+  //         style: 'cancel'
+  //     }, {
+  //         text: 'OK',
+  //         onPress: () => BackHandler.exitApp()
+  //     }, ], {
+  //         cancelable: false
+  //     }
+  //   )
+  //   return true;
+  // } 
+
+  // componentDidMount() {
+  //   BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  // }
+
+  // componentWillUnmount() {
+  //   BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  // }
   
 }
 
@@ -110,8 +170,7 @@ const styles = StyleSheet.create({
   },
   logout: {
     position: "absolute",
-    paddingTop: 15,
-    top: 20,
-    right: 20
+    top: 10,
+    right: 10
   }
 });

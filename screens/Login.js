@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image, KeyboardAvoidingView, AsyncStorage, ActivityIndicator } from 'react-native';
+import { StyleSheet, Image, KeyboardAvoidingView, AsyncStorage, ActivityIndicator, View, Picker } from 'react-native';
 import { Layout, Text, Button, Input } from 'react-native-ui-kitten';
 import * as firebase from 'firebase';
 import firestore from 'firebase/firestore';
@@ -15,6 +15,7 @@ export default class Login extends React.Component {
     this.state = {
       login: '',
       pass: '',
+      type: '',
       loading: true
     }
 
@@ -54,6 +55,14 @@ export default class Login extends React.Component {
             db.transaction(tx => {
               tx.executeSql(
                 'delete from config'
+              );
+            });
+          }
+          if(rows.length == 0){
+            this.setState({loading: false});  
+            db.transaction(tx => {
+              tx.executeSql(
+                'create table if not exists config (id integer primary key not null, email text, pass text, name text, type int);'
               );
             });
           }
@@ -98,6 +107,18 @@ export default class Login extends React.Component {
             value={this.state.pass}
             secureTextEntry={true}
           />
+          
+						<View style={styles.pickerContainer}>
+							<Picker
+								style={styles.picker}
+								selectedValue={this.state.type}
+								onValueChange={(itemValue, itemIndex) =>
+									this.setState({type: itemValue})
+								}>
+								<Picker.Item label="Sou um Cliente" value="cliente" />
+								<Picker.Item label="Sou um Freelancer" value="freelancer" />
+							</Picker>
+						</View>
           <Button 
             style={styles.button}
             onPress={this.Login.bind(this)}
@@ -125,22 +146,31 @@ export default class Login extends React.Component {
   }
 
 
-  Login = () => {
+  Login = async () => {
     const pass = this.state.pass;
     firebase.auth().signInWithEmailAndPassword(this.state.login, this.state.pass)
     .then((user) => {
+
       db.transaction(tx => {
         tx.executeSql(
-          "insert into config (email, pass, type) values ( ?, ?, ?)", [this.state.login, this.state.pass, 1],
-          () => {
-            this.props.navigation.navigate('Main', {email: this.state.login});
-          },
-          (err) => {
-            alert('Falha');
-            console.log(err);
-          }
+          "insert into config (email, pass, type) values ( ?, ?, ?)", [this.state.login, this.state.pass, this.state.type],
+          () => {}
         );
       });
+      firebase.firestore().collection('users').where('email', '==', this.state.login).get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach( async (doc) => {
+              // doc.data() is never undefined for query doc snapshots
+              await AsyncStorage.setItem('name', doc.data().name)
+              await AsyncStorage.setItem('type', doc.data().type)
+              await AsyncStorage.setItem('email', doc.data().email)
+              this.props.navigation.navigate('Main', {type: doc.data().type})
+          });
+        })
+        .catch((err) => {
+          alert('error')
+          console.log(err)
+        })
       
     })
     .catch((err) => {
@@ -185,6 +215,21 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: 50
-  }
+  },
+  pickerContainer: {
+		width: '100%',
+		backgroundColor: '#f7f9fc',
+		borderColor: '#edf1f7',
+		borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 20
+	},
+	picker: {
+		width: '100%'
+	},
+	label: {
+		color: '#8f9bb3',
+		marginBottom: 5
+	}
 });
 
