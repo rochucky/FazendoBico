@@ -50,18 +50,6 @@ export default class Login extends React.Component {
             value={this.state.pass}
             secureTextEntry={true}
           />
-          
-						<View style={styles.pickerContainer}>
-							<Picker
-								style={styles.picker}
-								selectedValue={this.state.type}
-								onValueChange={(itemValue, itemIndex) =>
-									this.setState({type: itemValue})
-								}>
-								<Picker.Item label="Sou um Cliente" value="cliente" />
-								<Picker.Item label="Sou um Freelancer" value="freelancer" />
-							</Picker>
-						</View>
           <Button 
             style={styles.button}
             onPress={this.Login.bind(this)}
@@ -106,6 +94,7 @@ export default class Login extends React.Component {
                       await AsyncStorage.setItem('name', doc.data().name)
                       await AsyncStorage.setItem('type', doc.data().type)
                       await AsyncStorage.setItem('email', rows._array[0].email)
+                      await AsyncStorage.setItem('id', doc.id);
                       this.setState({pass: ''});
                       this.props.navigation.navigate('Main', {type: doc.data().type})
                   });

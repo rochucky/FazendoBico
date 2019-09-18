@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   YellowBox,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   Alert,
   BackHandler
 } from 'react-native';
@@ -33,15 +34,21 @@ export default class HomeScreen extends React.Component {
     this.state = {
       name: '',
       type: '',
+      id: '',
       loading: true
     }
 
-    AsyncStorage.multiGet(['name','type'])
+    AsyncStorage.multiGet(['name','type','id'])
       .then( async (items) => {
         await this.setState({name: items[0][1]})
         await this.setState({type: items[1][1]})
+        await this.setState({id: items[2][1]})
         await this.setState({loading: false})
       })
+      .then(() => {
+        this.user = firebase.firestore().collection('users').doc(this.state.id)
+      })
+
   }
 
   render(){
@@ -58,18 +65,26 @@ export default class HomeScreen extends React.Component {
         <Layout style={styles.container}>
           <Image style={styles.thumb} source={{uri: 'http://img.clipartlook.com/super-mario-face-clipart-1-super-mario-clipart-520_386.jpg'}} />
           <Text
-            // style={styles.title}
+            style={styles.name}
             category='h4'
-            status='info'
           >{this.state.name}</Text>
-          <Text
-            // style={styles.title}
-            category='p1'
-          >{this.state.type}</Text>
-          <Text
-            style={styles.content}
-            category='h3'
-          >à combinar conteúdo</Text>
+          <Layout style={styles.usertype}>
+            <Text
+              style={{paddingRight: 10}}
+              category='h6'
+            >{this.state.type.toUpperCase()}</Text>
+            <Layout style={[styles.change, {backgroundColor: '#cc0000'}]}>
+              <TouchableOpacity 
+                onPress={this.changeUserType.bind(this)}
+              >
+                <FontAwesome 
+                  size={20}
+                  name={'exchange'}
+                  color="white"
+                />
+              </TouchableOpacity>
+            </Layout>
+          </Layout>
           <Layout style={styles.logout}>
             <TouchableWithoutFeedback
               onPress={() => {
@@ -117,6 +132,33 @@ export default class HomeScreen extends React.Component {
       this.setState({type: response[2][1]})
       this.setState({name: response[0][1]})
     })
+  }
+
+  changeUserType = () => {
+    Alert.alert(
+      'Trocar',
+      'Deseja alternar o tipo de usuário?', [{
+          text: 'Cancelar',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
+      }, {
+          text: 'OK',
+          onPress: () => {
+            let newType = 'cliente';
+            if(this.state.type == 'cliente'){
+              newType = 'freelancer'
+            }
+            this.user.update({
+              type: newType
+            })
+            .then(() => {
+              NavigationService.navigate('Login');
+            })
+          }
+      }, ], {
+          cancelable: false
+      }
+    )
   }
 
   handleBackButton = () => {
@@ -180,5 +222,21 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     right: 10
+  },
+  name: {
+    color: "#1899DA"
+  },
+  usertype: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  change: {
+    borderWidth:1,
+    borderColor:'rgba(0,0,0,0.2)',
+    alignItems:'center',
+    justifyContent:'center',
+    width:30,
+    height:30,
+    borderRadius:15
   }
 });
