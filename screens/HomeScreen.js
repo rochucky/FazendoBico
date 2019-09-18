@@ -9,6 +9,8 @@ import {
   Alert,
   BackHandler
 } from 'react-native';
+import { NavigationActions, StackActions } from 'react-navigation';
+import NavigationService from '../navigation/NavigationService'
 import { Layout, Text } from 'react-native-ui-kitten';
 import { SQLite } from 'expo';
 import { FontAwesome } from '@expo/vector-icons';
@@ -22,7 +24,7 @@ const db = SQLite.openDatabase('bicos');
 export default class HomeScreen extends React.Component {
 
   static navigationOptions = {
-    title: 'Home'
+    title: 'Bicos'
   };
 
   constructor(props){
@@ -101,7 +103,7 @@ export default class HomeScreen extends React.Component {
                 'delete from config'
               );
             });
-            BackHandler.exitApp()
+            NavigationService.navigate('Login');
           }
       }, ], {
           cancelable: false
@@ -117,30 +119,36 @@ export default class HomeScreen extends React.Component {
     })
   }
 
-  // handleBackButton = () => {
-  //   Alert.alert(
-  //     'Exit App',
-  //     'Deseja realmente Sair?', [{
-  //         text: 'Cancelar',
-  //         onPress: () => console.log('Cancel Pressed'),
-  //         style: 'cancel'
-  //     }, {
-  //         text: 'OK',
-  //         onPress: () => BackHandler.exitApp()
-  //     }, ], {
-  //         cancelable: false
-  //     }
-  //   )
-  //   return true;
-  // } 
+  handleBackButton = () => {
+    Alert.alert(
+      'Exit App',
+      'Deseja realmente Sair?', [{
+          text: 'Cancelar',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
+      }, {
+          text: 'OK',
+          onPress: () => BackHandler.exitApp()
+      }, ], {
+          cancelable: false
+      }
+    )
+    return true;
+  } 
 
-  // componentDidMount() {
-  //   BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-  // }
+  componentDidMount() {
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    });
+    this.blurListener = this.props.navigation.addListener('didBlur', () => {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    });
+  }
 
-  // componentWillUnmount() {
-  //   BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-  // }
+  componentWillUnmount() {
+    this.focusListener.removeEventListener()
+    this.blirListener.removeEventListener()
+  }
   
 }
 

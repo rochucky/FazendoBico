@@ -23,6 +23,7 @@ HomeStack.navigationOptions = {
       }
     />
   ),
+  tabBarOptions: { activeTintColor:'red' }
 };
 
 const LinksStack = createStackNavigator({

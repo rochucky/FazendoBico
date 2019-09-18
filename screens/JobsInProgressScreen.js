@@ -9,7 +9,7 @@ import {
 import * as firebase from 'firebase';
 import firestore from 'firebase/firestore';
 
-export default class JobsScreen extends React.Component {
+export default class JobsInProgressScreen extends React.Component {
   static navigationOptions = {
     title: 'Bicos'
   };
@@ -29,7 +29,7 @@ export default class JobsScreen extends React.Component {
     AsyncStorage.getItem('email')
       .then((email) => {
         this.setState({email: email});
-        firebase.firestore().collection('jobs').where('owner', '==', email).where('status', '==', 'Aberto').get()
+        firebase.firestore().collection('jobs').where('owner', '==', email).where('status', '==', 'Em Andamento').get()
         .then((querySnapshot) => {
           const items = []
           querySnapshot.forEach((doc) => {
@@ -93,21 +93,13 @@ export default class JobsScreen extends React.Component {
             />
           }
         />
-        <Button
-          status='info'
-          size='large'
-          onPress={() => {
-            this.props.navigation.push('NewJobScreen');
-          }}>
-          Criar
-        </Button>
       </Layout>
     )
   }
 
   _onRefresh = async () => {
     this.setState({refreshing: true});
-    firebase.firestore().collection('jobs').where('owner', '==', this.state.email).where('status', '==' , 'Aberto').get()
+    firebase.firestore().collection('jobs').where('owner', '==', this.state.email).where('status', '==', 'Em Andamento').get()
     .then((querySnapshot) => {
       const items = []
       querySnapshot.forEach((doc) => {

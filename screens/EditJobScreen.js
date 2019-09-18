@@ -9,33 +9,31 @@ import {
 import * as firebase from 'firebase'
 import firestore from 'firebase/firestore';
 
-export default class NewJobScreen extends React.Component {
+export default class EditJobScreen extends React.Component {
   static navigationOptions = {
-    title: 'Novo Bico'
+    title: 'Editar Bico'
   };
 
   constructor(props){
     super(props);
+		
+		this.item = this.props.navigation.getParam('item');
 
     this.state = {
-			title: '',
-			description: '',
-			value: '',
-			email: '',
-			address: '',
-			number: '',
-			neighborhood: '',
-			city: '',
-			state: '',
-			zipcode: '',
+			title: this.item.data.title,
+			description: this.item.data.description,
+			value: this.item.data.value,
+			email: this.item.data.email,
+			address: this.item.data.address,
+			number: this.item.data.number,
+			neighborhood: this.item.data.neighborhood,
+			city: this.item.data.city,
+			state: this.item.data.state,
+			zipcode: this.item.data.zipcode,
 			padding: 0
 		}
 		
-		this.jobs = firebase.firestore().collection('jobs');
-		AsyncStorage.getItem('email')
-			.then((item) => {
-				this.setState({email: item})
-			})
+		this.job = firebase.firestore().collection('jobs').doc(this.item.id);
 
   }
 
@@ -157,9 +155,9 @@ export default class NewJobScreen extends React.Component {
 						/>
 						<Button 
 							style={styles.button}
-							title='Criar'
-							onPress={this.createJob.bind(this)}
-						>Gravar</Button>
+							title='Gravar'
+							onPress={this.updateJob.bind(this)}
+						>Criar</Button>
 					</ScrollView>
 				</KeyboardAvoidingView>
 			
@@ -173,7 +171,7 @@ export default class NewJobScreen extends React.Component {
 		this.setState({padding: 0})
 	});
 	
-	createJob = async () => {
+	updateJob = async () => {
 		
 		if(this.state.title == '' || 
 			this.state.description == '' || 
@@ -189,7 +187,7 @@ export default class NewJobScreen extends React.Component {
 			return false;
 		}
 
-		this.jobs.add({
+		this.job.update({
 			title: this.state.title,
 			description: this.state.description,
 			value: text = parseFloat(this.state.value.replace(',','.')).toFixed(2),
@@ -198,16 +196,14 @@ export default class NewJobScreen extends React.Component {
 			address: this.state.address,
 			number: this.state.number,
 			neighborhood: this.state.neighborhood,
-			zipcode: this.state.zipcode,
-			owner: this.state.email,
-			status: 'Aberto'
+			zipcode: this.state.zipcode
 		})
 		.then(() => {
-			alert('Bico criado com sucesso!')
+			alert('Bico atualizado com sucesso!')
 			this.props.navigation.goBack();
 		})
 		.catch((err) => {
-			alert('Erro ao criar Bico')
+			alert('Erro ao atualizar Bico')
 			console.log(err)
 		})
 	}

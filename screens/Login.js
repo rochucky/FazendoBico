@@ -19,65 +19,8 @@ export default class Login extends React.Component {
       loading: true
     }
 
-    db.transaction(tx => {
-      tx.executeSql(
-        'select * from config', [],
-        (_, {rows}) => {
-          // alert('Ok');
-          if(rows.length == 1){
-            firebase.auth().signInWithEmailAndPassword(rows._array[0].email, rows._array[0].pass)
-            .then(async (user) => {
-              firebase.firestore().collection('users').where('email', '==', rows._array[0].email).get()
-              .then((querySnapshot) => {
-                querySnapshot.forEach( async (doc) => {
-                    // doc.data() is never undefined for query doc snapshots
-                    await AsyncStorage.setItem('name', doc.data().name)
-                    await AsyncStorage.setItem('type', doc.data().type)
-                    await AsyncStorage.setItem('email', rows._array[0].email)
-                    this.props.navigation.navigate('Main', {type: doc.data().type})
-                });
-              })
-              .catch((err) => {
-                alert('error')
-                console.log(err)
-              })
-            })
-            .catch(() => {
-              db.transaction(tx => {
-                tx.executeSql(
-                  'delete from config'
-                );
-              });
-              alert('Falha nas credenciais, por favor logue novamente');
-            })
-          }
-          if(rows.length > 1){
-            db.transaction(tx => {
-              tx.executeSql(
-                'delete from config'
-              );
-            });
-          }
-          if(rows.length == 0){
-            this.setState({loading: false});  
-            db.transaction(tx => {
-              tx.executeSql(
-                'create table if not exists config (id integer primary key not null, email text, pass text, name text, type int);'
-              );
-            });
-          }
-        },
-        () => {
-          this.setState({loading: false});  
-          db.transaction(tx => {
-            tx.executeSql(
-              'create table if not exists config (id integer primary key not null, email text, pass text, name text, type int);'
-            );
-          });
-        }
-      );
-    });
   }
+
 
   render(){
 
@@ -145,8 +88,74 @@ export default class Login extends React.Component {
     }
   }
 
+  componentDidMount() {
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      this.setState({loading: true});
+      db.transaction(tx => {
+        tx.executeSql(
+          'select * from config', [],
+          (_, {rows}) => {
+            // alert('Ok');
+            if(rows.length == 1){
+              firebase.auth().signInWithEmailAndPassword(rows._array[0].email, rows._array[0].pass)
+              .then(async (user) => {
+                firebase.firestore().collection('users').where('email', '==', rows._array[0].email).get()
+                .then((querySnapshot) => {
+                  querySnapshot.forEach( async (doc) => {
+                      // doc.data() is never undefined for query doc snapshots
+                      await AsyncStorage.setItem('name', doc.data().name)
+                      await AsyncStorage.setItem('type', doc.data().type)
+                      await AsyncStorage.setItem('email', rows._array[0].email)
+                      this.setState({pass: ''});
+                      this.props.navigation.navigate('Main', {type: doc.data().type})
+                  });
+                })
+                .catch((err) => {
+                  alert('error')
+                  console.log(err)
+                })
+              })
+              .catch(() => {
+                db.transaction(tx => {
+                  tx.executeSql(
+                    'delete from config'
+                  );
+                });
+                alert('Falha nas credenciais, por favor logue novamente');
+              })
+            }
+            if(rows.length > 1){
+              db.transaction(tx => {
+                tx.executeSql(
+                  'delete from config'
+                );
+              });
+            }
+            if(rows.length == 0){
+              this.setState({loading: false});  
+              db.transaction(tx => {
+                tx.executeSql(
+                  'create table if not exists config (id integer primary key not null, email text, pass text, name text, type int);'
+                );
+              });
+            }
+          },
+          () => {
+            this.setState({loading: false});  
+            db.transaction(tx => {
+              tx.executeSql(
+                'create table if not exists config (id integer primary key not null, email text, pass text, name text, type int);'
+              );
+            });
+          }
+        );
+      });
+    });
+  }
+
 
   Login = async () => {
+    this.setState({loading: true});
     const pass = this.state.pass;
     firebase.auth().signInWithEmailAndPassword(this.state.login, this.state.pass)
     .then((user) => {
@@ -164,10 +173,12 @@ export default class Login extends React.Component {
               await AsyncStorage.setItem('name', doc.data().name)
               await AsyncStorage.setItem('type', doc.data().type)
               await AsyncStorage.setItem('email', doc.data().email)
+              this.setState({pass: ''});
               this.props.navigation.navigate('Main', {type: doc.data().type})
           });
         })
         .catch((err) => {
+          this.setState({loading: false});
           alert('error')
           console.log(err)
         })
@@ -176,18 +187,24 @@ export default class Login extends React.Component {
     .catch((err) => {
       if(err == 'Error: The email address is badly formatted.'){
         alert('Email inválido');
+        this.setState({loading: false});
       }
       if(err == 'Error: The password is invalid or the user does not have a password.'){
         alert('Senha incorreta');
+        this.setState({loading: false});
+
       }
       if(err == 'Error: There is no user record corresponding to this identifier. The user may have been deleted.'){
         alert('Usuário não existe, por favor verifique o login e senha novamente');
+        this.setState({loading: false});
       }
       // console.log(err);
     });
       
   };
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

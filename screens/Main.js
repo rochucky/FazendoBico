@@ -27,7 +27,7 @@ export default class Main extends React.Component {
 
 		if(usertype == 'cliente'){
 			return(
-				<ClientTabNavigator />
+				<ClientTabNavigator screenProps={this.props.navigation}/>
 			)	
 		}
 		if(usertype == 'freelancer'){

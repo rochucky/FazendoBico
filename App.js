@@ -2,6 +2,7 @@ import React from 'react';
 import { mapping, light as lightTheme } from '@eva-design/eva';
 import { ApplicationProvider, IconRegistry } from 'react-native-ui-kitten';
 import AppNavigator from './navigation/AppNavigator';
+import NavigationService from './navigation/NavigationService';
 import * as firebase from 'firebase';
 import {YellowBox} from 'react-native';
 
@@ -23,7 +24,9 @@ const App = () => (
     <ApplicationProvider
         mapping={mapping}
         theme={lightTheme}>
-        <AppNavigator />
+        <AppNavigator ref={navigatorRef => {
+          NavigationService.setTopLevelNavigator(navigatorRef);
+        }}/>
     </ApplicationProvider>
 );
 
