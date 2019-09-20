@@ -1,11 +1,12 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation';
+import { FontAwesome } from '@expo/vector-icons';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import JobsFreelancerNavigator from './JobsFreelancerNavigator';
+import JobsInProgressNavigator from './JobsInProgressNavigator';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -14,51 +15,56 @@ const HomeStack = createStackNavigator({
 HomeStack.navigationOptions = {
   tabBarLabel: 'Home',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
+    <FontAwesome 
+      size={32}
+      name={'home'}
+      color={focused ? "#1899DA" : 'grey'}
     />
   ),
-  tabBarOptions: { activeTintColor:'red' }
+  tabBarOptions: { activeTintColor:'#1899DA' }
 };
 
-const LinksStack = createStackNavigator({
-  Links: LinksScreen,
+const JobsStack = createStackNavigator({
+  Jobs: JobsFreelancerNavigator,
+},{
+  headerMode: 'none'
 });
 
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+JobsStack.navigationOptions = {
+  tabBarLabel: 'Abertos',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
+    <FontAwesome 
+      size={32}
+      name={'folder-open-o'}
+      color={focused ? "#1899DA" : 'grey'}
     />
   ),
-  title: 'Teste'
+  tabBarOptions: { activeTintColor:'#1899DA' }
+
 };
 
-const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen,
+const JobsInProgressStack = createStackNavigator({
+  JobsInProgress: JobsInProgressNavigator,
+},{
+  headerMode: 'none'
 });
 
-SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
+JobsInProgressStack.navigationOptions = {
+  tabBarLabel: 'Em Andamento',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
+    <FontAwesome 
+      size={32}
+      name={'road'}
+      color={focused ? "#1899DA" : 'grey'}
     />
   ),
+  tabBarOptions: { activeTintColor:'#1899DA' }
 };
 
 const Tabs = createBottomTabNavigator({
   HomeStack,
-  LinksStack,
-  SettingsStack,
+  JobsStack,
+  JobsInProgressStack,
 });
 
 export default createAppContainer(Tabs);

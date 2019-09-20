@@ -189,7 +189,7 @@ export default class HomeScreen extends React.Component {
 
   componentWillUnmount() {
     this.focusListener.removeEventListener()
-    this.blirListener.removeEventListener()
+    this.blurListener.removeEventListener()
   }
   
 }

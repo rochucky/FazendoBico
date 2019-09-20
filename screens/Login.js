@@ -59,6 +59,7 @@ export default class Login extends React.Component {
             style={styles.links}
             category='h5'
             status='info'
+            keyboardType="email-address"
             onPress={() => {
               this.props.navigation.navigate('ForgotPassword')
             }}
@@ -146,7 +147,7 @@ export default class Login extends React.Component {
   Login = async () => {
     this.setState({loading: true});
     const pass = this.state.pass;
-    firebase.auth().signInWithEmailAndPassword(this.state.login, this.state.pass)
+    firebase.auth().signInWithEmailAndPassword(this.state.login.toLowerCase(), this.state.pass)
     .then((user) => {
 
       db.transaction(tx => {
@@ -155,7 +156,7 @@ export default class Login extends React.Component {
           () => {}
         );
       });
-      firebase.firestore().collection('users').where('email', '==', this.state.login).get()
+      firebase.firestore().collection('users').where('email', '==', this.state.login.toLowerCase()).get()
         .then((querySnapshot) => {
           querySnapshot.forEach( async (doc) => {
               // doc.data() is never undefined for query doc snapshots

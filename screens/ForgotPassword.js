@@ -20,7 +20,8 @@ export default class ForgotPassword extends React.Component {
         <Text style={styles.text} category='p1'>Nos informe o email cadastrado</Text>
         <Input 
           style={styles.input}
-          placeholder='Email' 
+          placeholder='Email'
+          keyboardType="email-address"
           onChangeText={(text) => this.setState({email: text})} 
           value={this.state.email}
         />

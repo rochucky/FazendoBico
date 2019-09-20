@@ -28,6 +28,7 @@ export default class NewJobScreen extends React.Component {
 			city: '',
 			state: '',
 			zipcode: '',
+			offers: [],
 			padding: 0
 		}
 		
@@ -200,7 +201,8 @@ export default class NewJobScreen extends React.Component {
 			neighborhood: this.state.neighborhood,
 			zipcode: this.state.zipcode,
 			owner: this.state.email,
-			status: 'Aberto'
+			status: 'Aberto',
+			offers: 0
 		})
 		.then(() => {
 			alert('Bico criado com sucesso!')

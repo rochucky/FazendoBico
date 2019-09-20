@@ -55,7 +55,8 @@ export default class SignUp extends React.Component {
           />
           <Input 
             style={styles.input}
-            placeholder='Email' 
+            placeholder='Email'
+            keyboardType="email-address"
             onChangeText={(text) => this.setState({email: text})} 
             value={this.state.email}
           />
@@ -91,24 +92,32 @@ export default class SignUp extends React.Component {
     }
   }
   SignUp = () => {
-    if(this.state.email == ''){
-      alert('Preencha o email');
+    if(this.state.email == '' ||
+       this.state.pass == '' ||
+       this.state.passConfirm == '' ||
+       this.state.name == ''){
+      alert('Todos os campos são obrigatórios');
       return false;
     }
-    try {
-      firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.pass).then((response) => {
-        this.users.add({
-          name: this.state.name,
-          email: this.state.email,
-          type: this.state.type
-        }).then((result) => {
-          alert('Usuário cadastrado com sucesso');
-          this.props.navigation.goBack();
-        });
-      });
-    } catch (error) {
-      console.log(error.toString(error));
+    if(this.state.pass !== this.state.passConfirm){
+      alert('Senha e confirmação não batem');
+      return false;
     }
+    
+    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.pass).then((response) => {
+      this.users.add({
+        name: this.state.name,
+        email: this.state.email.toLowerCase(),
+        type: this.state.type
+      })
+      .then((result) => {
+        alert('Usuário cadastrado com sucesso');
+        this.props.navigation.goBack();
+      })
+      .catch((err) => {
+        alert(err);
+      })
+    });
   }
 }
 

@@ -24,8 +24,6 @@ export default class JobsScreen extends React.Component {
       
     }
 
-    
-
     AsyncStorage.getItem('email')
       .then((email) => {
         this.setState({email: email});
@@ -33,7 +31,7 @@ export default class JobsScreen extends React.Component {
         .then((querySnapshot) => {
           const items = []
           querySnapshot.forEach((doc) => {
-              items.push({id: doc.id, data: doc.data()})
+            items.push({id: doc.id, data: doc.data()});
           })
           this.setState({items: items})
           this.setState({refreshing: false})
@@ -69,14 +67,14 @@ export default class JobsScreen extends React.Component {
               >
                 <Layout style={styles.listItem}>
                   <Layout style={styles.listItemHeader}>
-                  <Text 
-                    style={styles.listItemTitle}
-                    category='h5'
-                  >{item.data.title}</Text>
-                  <Text 
-                    style={styles.listItemTitle}
-                    category='h5'
-                  >{item.data.value}</Text>
+                    <Text 
+                      style={styles.listItemTitle}
+                      category='h5'
+                    >{item.data.title}</Text>
+                    <Text 
+                      style={styles.listItemTitle}
+                      category='h5'
+                    >{item.data.value}</Text>
                   </Layout>
                   <Text style={styles.listItemDescription}>{item.data.description}</Text>
                 </Layout>

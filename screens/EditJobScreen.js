@@ -157,7 +157,7 @@ export default class EditJobScreen extends React.Component {
 							style={styles.button}
 							title='Gravar'
 							onPress={this.updateJob.bind(this)}
-						>Criar</Button>
+						>Gravar</Button>
 					</ScrollView>
 				</KeyboardAvoidingView>
 			
