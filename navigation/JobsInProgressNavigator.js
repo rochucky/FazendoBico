@@ -10,7 +10,13 @@ const JobsInProgressNavigator = createStackNavigator(
 		JobDescription: JobInProgressDescription
 	},
   {
-	initialRouteName: "JobsInProgressScreen"
+		initialRouteName: "JobsInProgressScreen",
+		defaultNavigationOptions: {
+	    headerStyle: {
+	      backgroundColor: '#1899DA',
+	    },
+	    headerTintColor: '#fff',
+	  },
   }
 );
 

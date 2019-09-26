@@ -3,7 +3,7 @@ import { StyleSheet, Image, KeyboardAvoidingView, AsyncStorage, ActivityIndicato
 import { Layout, Text, Button, Input } from 'react-native-ui-kitten';
 import * as firebase from 'firebase';
 import firestore from 'firebase/firestore';
-import { SQLite } from 'expo';
+import { SQLite } from 'expo-sqlite'
 
 
 const db = SQLite.openDatabase('bicos');

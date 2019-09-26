@@ -40,12 +40,12 @@ export default class JobDescription extends React.Component {
     return (
       <Layout style={styles.container}>
         <ScrollView>
-          <Layout style={styles.title}>
+          <Layout style={styles.titleContainer}>
     				<Text 
     					style={styles.title}
     					category='h3'
     				>{this.item.data.title}</Text>
-            <Layout style={[styles.button, {backgroundColor: '#FFFFFF', bottom: 0, right: 0, height: 40, width: 40}]}>
+            <Layout style={[styles.button, {backgroundColor: '#FFFFFF', top: 10, right: 15, height: 40, width: 40}]}>
               <TouchableOpacity 
                 onPress={() => {
                   this.props.navigation.navigate('JobOffersScreen', {item: this.item})
@@ -57,18 +57,19 @@ export default class JobDescription extends React.Component {
                 >{this.state.offers}</Text>
               </TouchableOpacity>
             </Layout>
+    				<Text 
+    					style={styles.value}
+    					category='h6'
+    				>R$ {this.item.data.value}</Text>
           </Layout>
-  				<Text 
-  					style={styles.value}
-  					category='h6'
-  				>R$ {this.item.data.value}</Text>
-          <Text style={styles.label}>Descrição</Text>
-  				<Text style={styles.description}>{this.item.data.description}</Text>
-          <Text style={styles.label}>Endereço</Text>
-          <Text style={styles.description}>{this.item.data.address}, {this.item.data.number} - {this.item.data.neighborhood}</Text>
-          <Text style={styles.label}>Cidade</Text>
-          <Text style={styles.description}>{this.item.data.city} - {this.item.data.state}</Text>
-          
+          <Layout style={styles.bodyContainer}>
+            <Text style={styles.label}>Descrição</Text>
+    				<Text style={styles.description}>{this.item.data.description}</Text>
+            <Text style={styles.label}>Endereço</Text>
+            <Text style={styles.description}>{this.item.data.address}, {this.item.data.number} - {this.item.data.neighborhood}</Text>
+            <Text style={styles.label}>Cidade</Text>
+            <Text style={styles.description}>{this.item.data.city} - {this.item.data.state}</Text>
+          </Layout>
   			</ScrollView>
         <Layout style={[styles.button, {backgroundColor: '#4da6ff'}]}>
           <TouchableOpacity 
@@ -129,20 +130,22 @@ export default class JobDescription extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%'
+  },
+  titleContainer: {
     paddingTop: 10,
     paddingRight: 15,
     paddingLeft: 15,
-    height: '100%'
-  }, 
-  title: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  } ,
+    backgroundColor: '#E1F9FF',
+    borderBottomWidth: 1,
+    borderColor: '#CCC'
+  },
+  bodyContainer: {
+    paddingRight: 15,
+    paddingLeft: 15
+  },
   value: {
-		borderBottomWidth: 1,
-		borderColor: '#CCC',
-		paddingBottom: 10
+    paddingBottom: 10
   },
   listItemTitle: {
     paddingBottom: 5
@@ -150,9 +153,10 @@ const styles = StyleSheet.create({
 
   headerText: {
     fontSize: 20
-	},
+  },
   label: {
-    paddingTop: 25,
+    paddingTop: 15,
+    paddingBottom: 5,
     color: '#CACACA'
   },
   description: {

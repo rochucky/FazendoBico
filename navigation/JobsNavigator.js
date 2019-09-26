@@ -18,7 +18,13 @@ const JobsNavigator = createStackNavigator(
 		JobOfferDescription: JobOfferDescription
 	},
   {
-	initialRouteName: "JobsScreen"
+		initialRouteName: "JobsScreen",
+		defaultNavigationOptions: {
+	    headerStyle: {
+	      backgroundColor: '#1899DA',
+	    },
+	    headerTintColor: '#fff',
+	  },
   }
 );
 

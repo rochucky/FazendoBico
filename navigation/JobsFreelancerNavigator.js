@@ -12,7 +12,13 @@ const JobsNavigator = createStackNavigator(
 		JobFreelancerDescription: JobFreelancerDescription
 	},
   {
-	initialRouteName: "JobsFreelancerScreen"
+		initialRouteName: "JobsFreelancerScreen",
+		defaultNavigationOptions: {
+	    headerStyle: {
+	      backgroundColor: '#1899DA',
+	    },
+	    headerTintColor: '#fff',
+	  },
   }
 );
 

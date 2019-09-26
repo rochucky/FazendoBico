@@ -49,7 +49,7 @@ export default class JobOffersScreen extends React.Component {
             return(
               <TouchableWithoutFeedback
                 onPress={() => {
-                  this.props.navigation.push('JobOfferDescription', {item: item});
+                  this.props.navigation.push('JobOfferDescription', {item: item, job: this.item});
                 }}
               >
                 <Layout style={styles.listItem}>
@@ -57,11 +57,19 @@ export default class JobOffersScreen extends React.Component {
                     <Text 
                       style={styles.headerText}
                       category='h5'
-                    >{item.data.email}</Text>
-                    <Text 
-                      style={styles.headerText}
-                      category='h5'
-                    >R$ {item.data.value}</Text>
+                    >{item.data.name}</Text>
+                    {item.data.value > Number(this.item.data.value) && (
+                      <Text 
+                        style={[styles.headerText, {color: 'red'}]}
+                        category='h5'
+                      >R$ {item.data.value}</Text>
+                    )}
+                    {item.data.value < Number(this.item.data.value) && (
+                      <Text 
+                        style={[styles.headerText, {color: 'green'}]}
+                        category='h5'
+                      >R$ {item.data.value}</Text>
+                    )}
                   </Layout>
                   <Layout style={styles.listItemHeader}>
                     <Text 
@@ -73,7 +81,6 @@ export default class JobOffersScreen extends React.Component {
                       category='h5'
                     >{item.data.deadline} dias</Text>
                   </Layout>
-                  <Text style={styles.listItemDescription}>{item.data.description}</Text>
                 </Layout>
               </TouchableWithoutFeedback>
             )

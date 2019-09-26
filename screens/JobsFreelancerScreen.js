@@ -103,16 +103,18 @@ export default class JobsFreelancerScreen extends React.Component {
                       category='h5'
                     >R$ {item.data.value}</Text>
                   </Layout>
-                  <Layout style={styles.listItemHeader}>
-                    <Text 
-                      style={styles.listItemOffer}
-                      category='h6'
-                    >{item.offer ? 'Proposta Enviada' : ''}</Text>
-                    <Text 
-                      style={styles.listItemOffer}
-                      category='h6'
-                    >{item.offer ? 'R$ ' + this.state.offers[item.id] : ''}</Text>
-                  </Layout>
+                  {this.state.offers[item.id] && (
+                    <Layout style={styles.listItemHeader}>
+                      <Text 
+                        style={styles.listItemOffer}
+                        category='h6'
+                      >{item.offer ? 'Proposta Enviada' : ''}</Text>
+                      <Text 
+                        style={styles.listItemOffer}
+                        category='h6'
+                      >{item.offer ? 'R$ ' + this.state.offers[item.id] : ''}</Text>
+                    </Layout>
+                  )}
                   <Text style={styles.listItemDescription}>{item.data.description}</Text>
                 </Layout>
               </TouchableWithoutFeedback>

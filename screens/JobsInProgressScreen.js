@@ -9,7 +9,7 @@ import {
 import * as firebase from 'firebase';
 import firestore from 'firebase/firestore';
 
-export default class JobsInProgressScreen extends React.Component {
+export default class JobsScreen extends React.Component {
   static navigationOptions = {
     title: 'Bicos'
   };
@@ -24,8 +24,6 @@ export default class JobsInProgressScreen extends React.Component {
       
     }
 
-    
-
     AsyncStorage.getItem('email')
       .then((email) => {
         this.setState({email: email});
@@ -33,7 +31,7 @@ export default class JobsInProgressScreen extends React.Component {
         .then((querySnapshot) => {
           const items = []
           querySnapshot.forEach((doc) => {
-              items.push({id: doc.id, data: doc.data()})
+            items.push({id: doc.id, data: doc.data()});
           })
           this.setState({items: items})
           this.setState({refreshing: false})
@@ -69,14 +67,24 @@ export default class JobsInProgressScreen extends React.Component {
               >
                 <Layout style={styles.listItem}>
                   <Layout style={styles.listItemHeader}>
-                  <Text 
-                    style={styles.listItemTitle}
-                    category='h5'
-                  >{item.data.title}</Text>
-                  <Text 
-                    style={styles.listItemTitle}
-                    category='h5'
-                  >{item.data.value}</Text>
+                    <Text 
+                      style={styles.listItemTitle}
+                      category='h4'
+                    >{item.data.title}</Text>
+                    <Text 
+                      style={styles.listItemTitle}
+                      category='h4'
+                    >{item.data.freelancer_value}</Text>
+                  </Layout>
+                  <Layout style={styles.listItemHeader}>
+                    <Text 
+                      style={styles.listItemSubTitle}
+                      category='h6'
+                    >{item.data.freelancer_name}</Text>
+                    <Text 
+                      style={styles.listItemTitle}
+                      category='h6'
+                    >{item.data.freelancer_deadline} dias</Text>
                   </Layout>
                   <Text style={styles.listItemDescription}>{item.data.description}</Text>
                 </Layout>
@@ -99,7 +107,7 @@ export default class JobsInProgressScreen extends React.Component {
 
   _onRefresh = async () => {
     this.setState({refreshing: true});
-    firebase.firestore().collection('jobs').where('owner', '==', this.state.email).where('status', '==', 'Em Andamento').get()
+    firebase.firestore().collection('jobs').where('owner', '==', this.state.email).where('status', '==' , 'Em Andamento').get()
     .then((querySnapshot) => {
       const items = []
       querySnapshot.forEach((doc) => {

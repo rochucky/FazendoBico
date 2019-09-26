@@ -10,7 +10,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import * as firebase from 'firebase'
 import firestore from 'firebase/firestore';
 
-export default class JobDescription extends React.Component {
+export default class JobOfferDescription extends React.Component {
   static navigationOptions = {
     title: 'Detalhes'
   };
@@ -18,110 +18,113 @@ export default class JobDescription extends React.Component {
   constructor(props){
     super(props);
 
-    this.state = {
-     offers: ''
-    }
-
-		this.item = this.props.navigation.getParam('item');
-
-    this.job = firebase.firestore().collection('jobs').doc(this.item.id);
-    firebase.firestore().collection('offers').where('job', '==', this.item.id).get()
-      .then((snap) => {
-        this.setState({offers: snap.size})
-      })
-    
+		this.offer = this.props.navigation.getParam('item');
+    this.job = this.props.navigation.getParam('job');
 
   }
-
-  
-
 
   render() {
     return (
       <Layout style={styles.container}>
         <ScrollView>
-          <Layout style={styles.title}>
-    				<Text 
-    					style={styles.title}
+          <Layout style={styles.titleContainer}>
+    				<Text
     					category='h3'
-    				>{this.item.data.title}</Text>
-            <Layout style={[styles.button, {backgroundColor: '#FFFFFF', bottom: 0, right: 0, height: 40, width: 40}]}>
-              <TouchableOpacity 
-                onPress={() => {
-                  this.props.navigation.navigate('JobOffersScreen', {item: this.item})
-                }}
-              >
-                <Text
-                  category='h3'
-                  color= 'white'
-                >{this.state.offers}</Text>
-              </TouchableOpacity>
-            </Layout>
+    				>{this.job.data.title}</Text>
+    				<Text 
+    					style={styles.value}
+    					category='p2'
+    				>{this.job.data.description}</Text>
           </Layout>
-  				<Text 
-  					style={styles.value}
-  					category='h6'
-  				>R$ {this.item.data.value}</Text>
-          <Text style={styles.label}>Descrição</Text>
-  				<Text style={styles.description}>{this.item.data.description}</Text>
-          <Text style={styles.label}>Endereço</Text>
-          <Text style={styles.description}>{this.item.data.address}, {this.item.data.number} - {this.item.data.neighborhood}</Text>
-          <Text style={styles.label}>Cidade</Text>
-          <Text style={styles.description}>{this.item.data.city} - {this.item.data.state}</Text>
+          <Layout style={styles.bodyContainer}>
+            <Text style={styles.label}>Nome do Candidato</Text>
+    				<Text style={styles.description}>{this.offer.data.name}</Text>
+            <Text style={styles.label}>Valor do Bico</Text>
+            <Text style={styles.description}>R$ {this.job.data.value}</Text>
+            <Text style={styles.label}>Valor da Oferta</Text>
+            <Text style={styles.description}>R$ {this.offer.data.value}</Text>
+            <Text style={styles.label}>Avaliação do Candidato</Text>
+            <Layout style={styles.rating}>
+              <FontAwesome 
+                size={34}
+                name={'star'}
+                color="#EBE300"
+              />
+              <FontAwesome 
+                size={34}
+                name={'star'}
+                color="#EBE300"
+              />
+              <FontAwesome 
+                size={34}
+                name={'star-half-o'}
+                color="#EBE300"
+              />
+              <FontAwesome 
+                size={34}
+                name={'star-o'}
+                color="#EBE300"
+              />
+              <FontAwesome 
+                size={34}
+                name={'star-o'}
+                color="#EBE300"
+              />
+            </Layout>
+            <Text style={styles.description}></Text>
+          </Layout>
           
   			</ScrollView>
-        <Layout style={[styles.button, {backgroundColor: '#4da6ff'}]}>
+        <Layout style={[styles.button, {backgroundColor: '#47DA69'}]}>
           <TouchableOpacity 
-            onPress={this.edit.bind(this)}
+            onPress={this.accept.bind(this)}
           >
             <FontAwesome 
               size={40}
-              name={'pencil'}
+              name={'check'}
               color="white"
             />
           </TouchableOpacity>
           
-        </Layout>
-        <Layout style={[styles.button, {backgroundColor: '#cc0000', right: 100}]}>
-          <TouchableOpacity 
-            onPress={this.delete.bind(this)}
-          >
-            <FontAwesome 
-              size={40}
-              name={'trash-o'}
-              color="white"
-            />
-          </TouchableOpacity>
         </Layout>
       </Layout>
     )
 	}
 
-  edit = () => {
-    this.props.navigation.push('EditJobScreen', {item: this.item});
-  }
-
-  delete = () => {
+  accept = () => {
     Alert.alert(
-      'Excluir',
-      'Deseja excluir este bico?', [{
+      'Aceitar',
+      'Aceitar proposta?', [{
           text: 'Cancelar',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel'
       }, {
           text: 'OK',
           onPress: () => {
-            this.job.delete().then(() => {
-              alert('Bico Excluido');
-              this.props.navigation.goBack();
-            })
+            firebase.firestore().collection('jobs').doc(this.job.id)
+              .set({
+                freelancer: this.offer.data.email,
+                freelancer_name: this.offer.data.name,
+                freelancer_value: this.offer.data.value,
+                freelancer_deadline: this.offer.data.deadline,
+                status: 'Em Andamento'
+              },{
+                merge: true
+              })
+              .then(() => {
+                alert('Bico aceito! Acompanhe o andamento do mesmo na aba "Em Andamento"');
+                this.props.navigation.popToTop()
+              })
+              .catch((err) => {
+                console.log(err);
+                alert('Falha ao tentar aceitar proposta.');
+              })
           }
       }, ], {
           cancelable: false
       }
     )
     return true;
-    
   }
 
 }
@@ -129,11 +132,20 @@ export default class JobDescription extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%'
+  },
+  titleContainer: {
     paddingTop: 10,
     paddingRight: 15,
     paddingLeft: 15,
-    height: '100%'
-  }, 
+    backgroundColor: '#E1F9FF',
+    borderBottomWidth: 1,
+    borderColor: '#CCC'
+  },
+  bodyContainer: {
+    paddingRight: 15,
+    paddingLeft: 15
+  },
   title: {
     flex: 1,
     flexDirection: 'row',
@@ -156,7 +168,8 @@ const styles = StyleSheet.create({
     color: '#CACACA'
   },
   description: {
-    fontSize: 20
+    paddingTop: 10,
+    fontSize: 24
   },
   button: {
     position: 'absolute',
@@ -174,6 +187,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
+  },
+  rating: {
+    paddingTop: 10,
+    flex: 1,
+    flexDirection: 'row'
   }
-
 });

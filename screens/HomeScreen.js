@@ -13,7 +13,7 @@ import {
 import { NavigationActions, StackActions } from 'react-navigation';
 import NavigationService from '../navigation/NavigationService'
 import { Layout, Text } from 'react-native-ui-kitten';
-import { SQLite } from 'expo';
+import { SQLite } from 'expo-sqlite'
 import { FontAwesome } from '@expo/vector-icons';
 import * as firebase from 'firebase';
 import firestore from 'firebase/firestore';
@@ -25,7 +25,11 @@ const db = SQLite.openDatabase('bicos');
 export default class HomeScreen extends React.Component {
 
   static navigationOptions = {
-    title: 'Bicos'
+    title: 'Bicos',
+    headerStyle: {
+      backgroundColor: '#1899DA',
+    },
+    headerTintColor: '#fff',
   };
 
   constructor(props){

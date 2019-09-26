@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Alert } from 'react-native';
+import { ScrollView, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
 import {
   Layout,
 	Text,
@@ -21,16 +21,24 @@ export default class JobFreelancerDescription extends React.Component {
 		this.item = this.props.navigation.getParam('item')
     this.job = firebase.firestore().collection('jobs').doc(this.item.id)
     this.offers = firebase.firestore().collection('offers')
+    this.users = firebase.firestore().collection('users')
 
     
     this.state = {
 			offer: false,
       email: this.props.navigation.getParam('email'),
+      name: '',
+      owner: '',
       myOffer: '',
       value: '',
       deadline: ''
 		}
     
+    AsyncStorage.getItem('name')
+      .then((item) => {
+        this.setState({name: item});
+      })
+
     this.offers
       .where('job', '==', this.item.id)
       .where('email', '==', this.props.navigation.getParam('email')).get()
@@ -42,7 +50,14 @@ export default class JobFreelancerDescription extends React.Component {
         })
 
       })
-      .then()
+
+    this.users
+      .where('email', '==', this.item.data.owner).get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          this.setState({owner: doc.data().name})
+        })
+      })
   }
 
   
@@ -54,17 +69,22 @@ export default class JobFreelancerDescription extends React.Component {
       return (
         <Layout style={styles.container}>
           <ScrollView>
-    				<Text 
-    					style={styles.title}
-    					category='h3'
-    				>{this.item.data.title}</Text>
-    				<Text 
-    					style={styles.value}
-    					category='h6'
-    				>R$ {this.item.data.value}</Text>
-            <Text style={styles.label}>Descrição</Text>
-    				<Text style={styles.description}>{this.item.data.description}</Text>
-            
+            <Layout style={styles.titleContainer}>
+      				<Text 
+      					style={styles.title}
+      					category='h3'
+      				>{this.item.data.title}</Text>
+      				<Text 
+      					style={styles.value}
+      					category='h6'
+      				>R$ {this.item.data.value}</Text>
+            </Layout>
+            <Layout style={styles.bodyContainer}>
+              <Text style={styles.label}>Descrição</Text>
+      				<Text style={styles.description}>{this.item.data.description}</Text>
+              <Text style={styles.label}>Solicitante</Text>
+              <Text style={styles.description}>{this.state.owner}</Text>
+            </Layout>
     			</ScrollView>
           <Layout style={[styles.button, {backgroundColor: '#47DA69'}]}>
             <TouchableOpacity 
@@ -84,26 +104,30 @@ export default class JobFreelancerDescription extends React.Component {
       return (
         <Layout style={styles.container}>
           <ScrollView>
-            <Text 
-              style={styles.title}
-              category='h3'
-            >{this.item.data.title}</Text>
-            <Text 
-              style={styles.value}
-              category='h6'
-            >R$ {this.item.data.value}</Text>
-            <Text style={styles.label}>Valor da Oferta</Text>
-            <Input
-              onChangeText={(text) => this.setState({value: text})} 
-              value={this.state.value}
-              keyboardType={'numeric'}
-            />
-            <Text style={styles.label}>Prazo</Text>
-            <Input
-              onChangeText={(text) => this.setState({deadline: text})} 
-              value={this.state.deadline}
-              keyboardType={'numeric'}
-            />
+            <Layout style={styles.titleContainer}>
+              <Text 
+                style={styles.title}
+                category='h3'
+              >{this.item.data.title}</Text>
+              <Text 
+                style={styles.value}
+                category='h6'
+              >R$ {this.item.data.value}</Text>
+            </Layout>
+            <Layout style={styles.bodyContainer}>
+              <Text style={styles.label}>Valor da Oferta</Text>
+              <Input
+                onChangeText={(text) => this.setState({value: text})} 
+                value={this.state.value}
+                keyboardType={'numeric'}
+              />
+              <Text style={styles.label}>Prazo</Text>
+              <Input
+                onChangeText={(text) => this.setState({deadline: text})} 
+                value={this.state.deadline}
+                keyboardType={'numeric'}
+              />
+            </Layout>
             
           </ScrollView>
           <Layout style={[styles.button, {backgroundColor: '#47DA69'}]}>
@@ -194,6 +218,7 @@ export default class JobFreelancerDescription extends React.Component {
                 value: parseFloat(this.state.value.replace(',','.')).toFixed(2),
                 deadline: this.state.deadline,
                 email: this.state.email,
+                name: this.state.name
               })
               .then(() => {
                 alert('Oferta enviada com sucesso!')
@@ -232,14 +257,21 @@ export default class JobFreelancerDescription extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%'
+  },
+  titleContainer: {
     paddingTop: 10,
     paddingRight: 15,
     paddingLeft: 15,
-    height: '100%'
-  },  
-  value: {
+    backgroundColor: '#E1F9FF',
 		borderBottomWidth: 1,
-		borderColor: '#CCC',
+		borderColor: '#CCC'
+  },
+  bodyContainer: {
+    paddingRight: 15,
+    paddingLeft: 15
+  },
+  value: {
 		paddingBottom: 10
   },
   listItemTitle: {

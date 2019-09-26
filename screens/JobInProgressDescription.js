@@ -1,10 +1,10 @@
 import React from 'react';
-import { ScrollView, StyleSheet, KeyboardAvoidingView, AsyncStorage, TouchableOpacity, Alert } from 'react-native';
+import { ScrollView, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Alert } from 'react-native';
 import {
   Layout,
-	Text,
-	Input,
-	Button
+  Text,
+  Input,
+  Button
 } from 'react-native-ui-kitten';
 import { FontAwesome } from '@expo/vector-icons';
 import * as firebase from 'firebase'
@@ -18,13 +18,18 @@ export default class JobDescription extends React.Component {
   constructor(props){
     super(props);
 
-		this.item = this.props.navigation.getParam('item');
+    this.state = {
+     offers: ''
+    }
+
+    this.item = this.props.navigation.getParam('item');
 
     this.job = firebase.firestore().collection('jobs').doc(this.item.id);
-
-    // this.state = {
-		// 	item: ''
-		// }
+    firebase.firestore().collection('offers').where('job', '==', this.item.id).get()
+      .then((snap) => {
+        this.setState({offers: snap.size})
+      })
+    
 
   }
 
@@ -35,44 +40,69 @@ export default class JobDescription extends React.Component {
     return (
       <Layout style={styles.container}>
         <ScrollView>
-  				<Text 
-  					style={styles.title}
-  					category='h3'
-  				>{this.item.data.title}</Text>
-  				<Text 
-  					style={styles.value}
-  					category='h6'
-  				>R$ {this.item.data.value}</Text>
-          <Text style={styles.label}>Descrição</Text>
-  				<Text style={styles.description}>{this.item.data.description}</Text>
-          <Text style={styles.label}>Endereço</Text>
-          <Text style={styles.description}>{this.item.data.address}, {this.item.data.number} - {this.item.data.neighborhood}</Text>
-          <Text style={styles.label}>Cidade</Text>
-          <Text style={styles.description}>{this.item.data.city} - {this.item.data.state}</Text>
+          <Layout style={styles.titleContainer}>
+            <Text 
+              style={styles.title}
+              category='h3'
+            >{this.item.data.title}</Text>
+            <Text 
+              style={styles.value}
+              category='h6'
+            >R$ {this.item.data.freelancer_value}</Text>
+          </Layout>
+          <Layout style={styles.bodyContainer}>
+            <Text style={styles.label}>Descrição</Text>
+            <Text style={styles.description}>{this.item.data.description}</Text>
+            <Text style={styles.label}>Endereço</Text>
+            <Text style={styles.description}>{this.item.data.address}, {this.item.data.number} - {this.item.data.neighborhood}</Text>
+            <Text style={styles.label}>Cidade</Text>
+            <Text style={styles.description}>{this.item.data.city} - {this.item.data.state}</Text>
+            <Text style={styles.label}>Freelancer</Text>
+            <Text style={styles.description}>{this.item.data.freelancer_name}</Text>
+          </Layout>
+        </ScrollView>
+        <Layout style={[styles.button, {backgroundColor: '#47DA69'}]}>
+          <TouchableOpacity 
+            onPress={this.pay.bind(this)}
+          >
+            <FontAwesome 
+              size={40}
+              name={'money'}
+              color="white"
+            />
+          </TouchableOpacity>
           
-  			</ScrollView>
+        </Layout>
+        <Layout style={[styles.button, {backgroundColor: '#4da6ff', bottom: 100}]}>
+          <TouchableOpacity 
+            onPress={this.chat.bind(this)}
+          >
+            <FontAwesome 
+              size={40}
+              name={'comments'}
+              color="white"
+            />
+          </TouchableOpacity>
+        </Layout>
       </Layout>
     )
-	}
-
-  edit = () => {
-    this.props.navigation.push('EditJobScreen', {item: this.item});
   }
 
-  delete = () => {
+  chat = () => {
+    alert('Aqui, vamos abrir o chat.')
+  }
+
+  pay = () => {
     Alert.alert(
-      'Excluir',
-      'Deseja excluir este bico?', [{
+      'Pagar',
+      'Deseja reallizar o pagamento?', [{
           text: 'Cancelar',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel'
       }, {
           text: 'OK',
           onPress: () => {
-            this.job.delete().then(() => {
-              alert('Bico Excluido');
-              this.props.navigation.goBack();
-            })
+            alert('Realizar lógica de pagamento...')
           }
       }, ], {
           cancelable: false
@@ -87,15 +117,22 @@ export default class JobDescription extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%'
+  },
+  titleContainer: {
     paddingTop: 10,
     paddingRight: 15,
     paddingLeft: 15,
-    height: '100%'
-  },  
+    backgroundColor: '#E1F9FF',
+    borderBottomWidth: 1,
+    borderColor: '#CCC'
+  },
+  bodyContainer: {
+    paddingRight: 15,
+    paddingLeft: 15
+  },
   value: {
-		borderBottomWidth: 1,
-		borderColor: '#CCC',
-		paddingBottom: 10
+    paddingBottom: 10
   },
   listItemTitle: {
     paddingBottom: 5
@@ -103,9 +140,10 @@ const styles = StyleSheet.create({
 
   headerText: {
     fontSize: 20
-	},
+  },
   label: {
-    paddingTop: 25,
+    paddingTop: 15,
+    paddingBottom: 5,
     color: '#CACACA'
   },
   description: {
