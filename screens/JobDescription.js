@@ -1,30 +1,49 @@
-import React from 'react';
-import { ScrollView, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Alert } from 'react-native';
+import React from 'react'
+import { ScrollView, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Alert, Platform, Modal, Image } from 'react-native'
 import {
   Layout,
 	Text,
 	Input,
 	Button
-} from 'react-native-ui-kitten';
-import { FontAwesome } from '@expo/vector-icons';
+} from 'react-native-ui-kitten'
+import { FontAwesome } from '@expo/vector-icons'
 import * as firebase from 'firebase'
-import firestore from 'firebase/firestore';
+import firestore from 'firebase/firestore'
+
+import * as ImagePicker from 'expo-image-picker'
+import * as Permissions from 'expo-permissions'
 
 export default class JobDescription extends React.Component {
   static navigationOptions = {
     title: 'Detalhes'
-  };
+  }
 
   constructor(props){
-    super(props);
+    super(props)
 
     this.state = {
-     offers: ''
+     offers: '',
+     images: [],
     }
 
-		this.item = this.props.navigation.getParam('item');
+		this.item = this.props.navigation.getParam('item')
 
-    this.job = firebase.firestore().collection('jobs').doc(this.item.id);
+    this.images = firebase.firestore().collection('images')
+    this.images.where('job', '==',this.item.id).get()
+      .then((snap) => {
+        let snapImgs = []
+        if(snap.size > 0){
+          snap.forEach(image => {
+            snapImgs.push(image.data())
+          })
+        }
+        else{
+          snapImgs.push(require('../assets/images/no-image.png'));
+        }
+        this.setState({images: snapImgs})
+      })
+    this.job = firebase.firestore().collection('jobs').doc(this.item.id)
+    
     firebase.firestore().collection('offers').where('job', '==', this.item.id).get()
       .then((snap) => {
         this.setState({offers: snap.size})
@@ -32,9 +51,6 @@ export default class JobDescription extends React.Component {
     
 
   }
-
-  
-
 
   render() {
     return (
@@ -70,6 +86,16 @@ export default class JobDescription extends React.Component {
             <Text style={styles.label}>Cidade</Text>
             <Text style={styles.description}>{this.item.data.city} - {this.item.data.state}</Text>
           </Layout>
+          <Layout style={styles.imgContainer}>
+            {this.state.images.map(image => {
+              return(
+                <Image
+                  style={styles.image}
+                  source={ image }
+                />
+              )
+            })}
+          </Layout>
   			</ScrollView>
         <Layout style={[styles.button, {backgroundColor: '#4da6ff'}]}>
           <TouchableOpacity 
@@ -94,12 +120,57 @@ export default class JobDescription extends React.Component {
             />
           </TouchableOpacity>
         </Layout>
+        <Layout style={[styles.button, {backgroundColor: '#4da6ff', bottom: 100}]}>
+          <TouchableOpacity 
+            onPress={this.picture.bind(this)}
+          >
+            <FontAwesome 
+              size={40}
+              name={'camera'}
+              color="white"
+            />
+          </TouchableOpacity>
+        </Layout>
       </Layout>
     )
 	}
 
+  picture = async () => {
+    if(!this.getPermissionAsync()){
+      alert('É preciso dar permissão para utilização da Câmera')
+      return false
+    }
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      base64: false,
+      quality: 0.4,
+    })
+    if(!result.cancelled){
+      let response = await fetch(result.uri)
+      let blob = await response.blob()
+      let date = new Date()
+      let filename = this.item.id + '_' + date.getFullYear() + (date.getMonth() + 1) + date.getDate() + date.getHours() + date.getMinutes() + date.getSeconds() + '.jpg'
+      firebase.storage().ref().child(filename).put(blob)
+        .then( async (snap) => {
+          let url = await snap.ref.getDownloadURL()
+          if(!this.state.images[0].uri){
+            this.setState({ images: [] })
+          }
+          let images = this.state.images
+          images.push({uri: url, job: this.item.id })
+          this.setState({ images: images })
+          this.images.add({uri: url, job: this.item.id })
+        })
+        .catch((err) => {
+          alert('Falha ao carregar arquivo!')
+          console.log(err)
+        })
+    }
+  }
+
   edit = () => {
-    this.props.navigation.push('EditJobScreen', {item: this.item});
+    this.props.navigation.push('EditJobScreen', {item: this.item})
   }
 
   delete = () => {
@@ -113,16 +184,34 @@ export default class JobDescription extends React.Component {
           text: 'OK',
           onPress: () => {
             this.job.delete().then(() => {
-              alert('Bico Excluido');
-              this.props.navigation.goBack();
+              alert('Bico Excluido')
+              this.props.navigation.goBack()
             })
           }
       }, ], {
           cancelable: false
       }
     )
-    return true;
+    return true
     
+  }
+
+  getPermissionAsync = async () => {
+    if (Platform.OS == 'ios') {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+      if (status !== 'granted') {
+        // alert('Sorry, we need camera roll permissions to make this work!')
+        return false
+      }
+    }
+    else{
+      const { status } = await Permissions.askAsync(Permissions.CAMERA)
+      if (status !== 'granted') {
+        // alert('Sorry, we need camera permissions to make this work!')
+        return false
+      }
+    }
+    return true
   }
 
 }
@@ -143,6 +232,21 @@ const styles = StyleSheet.create({
   bodyContainer: {
     paddingRight: 15,
     paddingLeft: 15
+  },
+  imgContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    paddingTop: 15,
+    paddingRight: 15,
+    paddingLeft: 15
+  },
+  image: {
+    borderWidth: 3,
+    borderColor: '#000',
+    width: '33.3%', 
+    height: 100
   },
   value: {
     paddingBottom: 10
@@ -180,4 +284,4 @@ const styles = StyleSheet.create({
     right: 0,
   }
 
-});
+})

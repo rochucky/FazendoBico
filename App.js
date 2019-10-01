@@ -13,7 +13,7 @@ const firebaseConfig = {
     authDomain: "bicos-6a1f2.firebaseapp.com",
     databaseURL: "https://bicos-6a1f2.firebaseio.com",
     projectId: "bicos-6a1f2",
-    storageBucket: "",
+    storageBucket: "gs://bicos-6a1f2.appspot.com",
     messagingSenderId: "355946700353",
     appId: "1:355946700353:web:d9c15b38e81f433f4d70c0"
 };
