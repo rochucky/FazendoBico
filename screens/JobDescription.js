@@ -158,9 +158,9 @@ export default class JobDescription extends React.Component {
             this.setState({ images: [] })
           }
           let images = this.state.images
-          images.push({uri: url, job: this.item.id })
+          images.push({uri: url, job: this.item.id, name: filename })
           this.setState({ images: images })
-          this.images.add({uri: url, job: this.item.id })
+          this.images.add({uri: url, job: this.item.id, name: filename })
         })
         .catch((err) => {
           alert('Falha ao carregar arquivo!')

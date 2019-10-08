@@ -86,18 +86,19 @@ export default class Login extends React.Component {
           (_, {rows}) => {
             // alert('Ok');
             if(rows.length == 1){
-              firebase.auth().signInWithEmailAndPassword(rows._array[0].email, rows._array[0].pass)
+              console.log(rows);
+              firebase.auth().signInWithEmailAndPassword(rows._array[0].email.toLowerCase(), rows._array[0].pass)
               .then(async (user) => {
-                firebase.firestore().collection('users').where('email', '==', rows._array[0].email).get()
+                firebase.firestore().collection('users').where('email', '==', rows._array[0].email.toLowerCase()).get()
                 .then((querySnapshot) => {
                   querySnapshot.forEach( async (doc) => {
-                      // doc.data() is never undefined for query doc snapshots
-                      await AsyncStorage.setItem('name', doc.data().name)
-                      await AsyncStorage.setItem('type', doc.data().type)
-                      await AsyncStorage.setItem('email', rows._array[0].email)
-                      await AsyncStorage.setItem('id', doc.id);
-                      this.setState({pass: ''});
-                      this.props.navigation.navigate('Main', {type: doc.data().type})
+                    // doc.data() is never undefined for query doc snapshots
+                    await AsyncStorage.setItem('name', doc.data().name)
+                    await AsyncStorage.setItem('type', doc.data().type)
+                    await AsyncStorage.setItem('email', doc.data().email)
+                    await AsyncStorage.setItem('id', doc.id);
+                    this.setState({pass: ''});
+                    this.props.navigation.navigate('Main', {type: doc.data().type})
                   });
                 })
                 .catch((err) => {
