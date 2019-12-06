@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Image,
   StyleSheet,
@@ -9,18 +9,20 @@ import {
   TouchableOpacity,
   Alert,
   BackHandler
-} from 'react-native';
-import { NavigationActions, StackActions } from 'react-navigation';
+} from 'react-native'
+import { NavigationActions, StackActions } from 'react-navigation'
 import NavigationService from '../navigation/NavigationService'
-import { Layout, Text } from 'react-native-ui-kitten';
+import { Layout, Text } from 'react-native-ui-kitten'
 import { SQLite } from 'expo-sqlite'
-import { FontAwesome } from '@expo/vector-icons';
-import * as firebase from 'firebase';
-import firestore from 'firebase/firestore';
+import { FontAwesome } from '@expo/vector-icons'
+import * as firebase from 'firebase'
+import firestore from 'firebase/firestore'
 
-YellowBox.ignoreWarnings(['Setting a timer']);
+import Colors from '../constants/Colors'
 
-const db = SQLite.openDatabase('bicos');
+YellowBox.ignoreWarnings(['Setting a timer'])
+
+const db = SQLite.openDatabase('bicos')
 
 export default class HomeScreen extends React.Component {
 
@@ -30,10 +32,10 @@ export default class HomeScreen extends React.Component {
       backgroundColor: '#1899DA',
     },
     headerTintColor: '#fff',
-  };
+  }
 
   constructor(props){
-    super(props);
+    super(props)
 
     this.state = {
       name: '',
@@ -43,11 +45,11 @@ export default class HomeScreen extends React.Component {
     }
 
     AsyncStorage.multiGet(['name','type','id'])
-      .then( async (items) => {
-        await this.setState({name: items[0][1]})
-        await this.setState({type: items[1][1]})
-        await this.setState({id: items[2][1]})
-        await this.setState({loading: false})
+      .then((items) => {
+        this.setState({name: items[0][1]})
+        this.setState({type: items[1][1]})
+        this.setState({id: items[2][1]})
+        this.setState({loading: false})
       })
       .then(() => {
         this.user = firebase.firestore().collection('users').doc(this.state.id)
@@ -67,7 +69,7 @@ export default class HomeScreen extends React.Component {
 
       return(
         <Layout style={styles.container}>
-          <Image style={styles.thumb} source={{uri: 'http://img.clipartlook.com/super-mario-face-clipart-1-super-mario-clipart-520_386.jpg'}} />
+            <Image style={styles.thumb} source={{uri: 'http://img.clipartlook.com/super-mario-face-clipart-1-super-mario-clipart-520_386.jpg'}} />
           <Text
             style={styles.name}
             category='h4'
@@ -120,22 +122,15 @@ export default class HomeScreen extends React.Component {
             db.transaction(tx => {
               tx.executeSql(
                 'delete from config'
-              );
-            });
-            NavigationService.navigate('Login');
+              )
+            })
+            NavigationService.navigate('Login')
           }
       }, ], {
           cancelable: false
       }
     )
-    return true;
-  }
-
-  _load = async () => {
-    await AsyncStorage.multiGet(['name','type']).then((response) => {
-      this.setState({type: response[2][1]})
-      this.setState({name: response[0][1]})
-    })
+    return true
   }
 
   changeUserType = () => {
@@ -148,7 +143,7 @@ export default class HomeScreen extends React.Component {
       }, {
           text: 'OK',
           onPress: () => {
-            let newType = 'cliente';
+            let newType = 'cliente'
             if(this.state.type == 'cliente'){
               newType = 'freelancer'
             }
@@ -156,7 +151,7 @@ export default class HomeScreen extends React.Component {
               type: newType
             })
             .then(() => {
-              NavigationService.navigate('Login');
+              NavigationService.navigate('Login')
             })
           }
       }, ], {
@@ -179,16 +174,16 @@ export default class HomeScreen extends React.Component {
           cancelable: false
       }
     )
-    return true;
+    return true
   } 
 
   componentDidMount() {
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
-      BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-    });
+      BackHandler.addEventListener('hardwareBackPress', this.handleBackButton)
+    })
     this.blurListener = this.props.navigation.addListener('didBlur', () => {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-    });
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
+    })
   }
 
   componentWillUnmount() {
@@ -243,4 +238,4 @@ const styles = StyleSheet.create({
     height:30,
     borderRadius:15
   }
-});
+})

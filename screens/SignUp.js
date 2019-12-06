@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Image, KeyboardAvoidingView } from 'react-native';
-import { Layout, Text, Button, Input } from 'react-native-ui-kitten';
+import { StyleSheet, Image, KeyboardAvoidingView, Dimensions, Keyboard, View, ScrollView } from 'react-native';
+import { Layout, Text } from 'react-native-ui-kitten';
 import * as firebase from 'firebase';
 import firestore from 'firebase/firestore';
+import { Button, Input } from '../components/CustomComponents'
 
 export default class SignUp extends React.Component {
 
@@ -13,7 +14,8 @@ export default class SignUp extends React.Component {
       email: '',
       pass: '',
       passConfirm: '',
-      type: ''
+      type: '',
+      screenHeight: Math.round(Dimensions.get('window').height)
     }
     this.users = firebase.firestore().collection('users');
   }
@@ -22,75 +24,87 @@ export default class SignUp extends React.Component {
   render(){
     if(this.state.type == ''){
       return(
-        <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-          <Image style={styles.logo} source={require('../assets/images/tags.png')} />
-          <Text style={styles.text} category='h4'>Cadastro</Text>
-          <Button 
-            style={styles.button}
-            onPress={() => {
-              this.setState({type: 'cliente'})
-            }}
-          >Sou um Cliente</Button>
-          <Button 
-            style={styles.button}
-            onPress={() => {
-              this.setState({type: 'freelancer'})
-            }}
-          >Sou um Freelancer</Button>
-        </KeyboardAvoidingView>
+        <View style={{height: this.state.screenHeight}}>
+          <ScrollView contentContainerStyle={{flexGrow: 1}}>
+            <View style={styles.container}>
+              <Image style={styles.logo} source={require('../assets/images/tags.png')} />
+              <Text style={styles.text} category='h4'>Cadastro</Text>
+              <Button 
+                text='Sou um Cliente'
+                onPress={() => {
+                  this.setState({type: 'cliente'})
+                }}
+              />
+              <Button 
+                text='Sou um Freelancer'
+                onPress={() => {
+                  this.setState({type: 'freelancer'})
+                }}
+              />
+            </View>
+          </ScrollView>
+        </View>
 
       )
     }
     else{
 
       return(
-        <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-          <Image style={styles.logo} source={require('../assets/images/tags.png')} />
-          <Text style={styles.text} category='h4'>Cadastro</Text>
-          <Input 
-            style={styles.input}
-            placeholder='Nome Completo' 
-            onChangeText={(text) => this.setState({name: text})} 
-            value={this.state.name}
-          />
-          <Input 
-            style={styles.input}
-            placeholder='Email'
-            keyboardType="email-address"
-            onChangeText={(text) => this.setState({email: text})} 
-            value={this.state.email}
-          />
-          <Input 
-            style={styles.input}
-            placeholder='Senha' 
-            onChangeText={(text) => this.setState({pass: text})} 
-            value={this.state.pass}
-            secureTextEntry={true}
-          />
-          <Input 
-            style={styles.input}
-            placeholder='Confirme a Senha' 
-            onChangeText={(text) => this.setState({passConfirm: text})} 
-            value={this.state.passConfirm}
-            secureTextEntry={true}
-          />
-          <Button 
-            style={styles.button}
-            onPress={this.SignUp.bind(this)}
-            title='Login' 
-          >Cadastrar</Button>
-          <Text
-            style={styles.links}
-            category='h5'
-            status='info'
-            onPress={() => {
-              this.props.navigation.goBack()
-            }}
-          >Voltar</Text>
-        </KeyboardAvoidingView>
+        <View style={{height: this.state.screenHeight}}>
+          <ScrollView contentContainerStyle={{flexGrow: 1}}>
+            <View style={styles.container}>
+              <Image style={styles.logo} source={require('../assets/images/tags.png')} />
+              <Text style={styles.text} category='h4'>Cadastro</Text>
+              <Input 
+                style={styles.input}
+                placeholder='Nome Completo' 
+                onChange={(text) => this.setState({name: text})} 
+                value={this.state.name}
+                textAlign='center'
+              />
+              <Input 
+                style={styles.input}
+                placeholder='Email'
+                keyboardType="email-address"
+                onChange={(text) => this.setState({email: text})} 
+                value={this.state.email}
+                textAlign='center'
+              />
+              <Input 
+                style={styles.input}
+                placeholder='Senha' 
+                onChange={(text) => this.setState({pass: text})} 
+                value={this.state.pass}
+                secureTextEntry={true}
+                textAlign='center'
+              />
+              <Input 
+                style={styles.input}
+                placeholder='Confirme a Senha' 
+                onChange={(text) => this.setState({passConfirm: text})} 
+                value={this.state.passConfirm}
+                secureTextEntry={true}
+                textAlign='center'
+              />
+              <Button 
+                text='Cadastrar'
+                onPress={this.SignUp.bind(this)}
+              />
+              <Text
+                style={styles.links}
+                category='h5'
+                status='info'
+                onPress={() => {
+                  this.props.navigation.goBack()
+                }}
+              >Voltar</Text>
+            </View>
+          </ScrollView>
+        </View>
       )
     }
   }
+
   SignUp = () => {
     if(this.state.email == '' ||
        this.state.pass == '' ||
@@ -119,6 +133,13 @@ export default class SignUp extends React.Component {
       })
     });
   }
+
+  keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',(e) => {
+    this.setState({screenHeight: this.state.screenHeight - e.endCoordinates.height})
+  });
+  keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',() => {
+    this.setState({screenHeight: Math.round(Dimensions.get('window').height) })
+  });
 }
 
 // const firebaseConfig = {

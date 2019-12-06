@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Image, KeyboardAvoidingView } from 'react-native';
-import { Layout, Text, Button, Input } from 'react-native-ui-kitten';
+import { Layout, Text } from 'react-native-ui-kitten';
+import { Button, Input } from '../components/CustomComponents'
 
 export default class ForgotPassword extends React.Component {
 
@@ -19,17 +20,16 @@ export default class ForgotPassword extends React.Component {
         <Text style={styles.text} category='h4'>Reset de senha</Text>
         <Text style={styles.text} category='p1'>Nos informe o email cadastrado</Text>
         <Input 
-          style={styles.input}
           placeholder='Email'
-          keyboardType="email-address"
-          onChangeText={(text) => this.setState({email: text})} 
+          type="email-address"
+          onChange={(text) => this.setState({email: text})} 
           value={this.state.email}
+          textAlign='center'
         />
         <Button 
-          style={styles.button}
           onPress={this.reset.bind(this)}
-          title='Login' 
-        >Enviar</Button>
+          text='Enviar' 
+        />
         <Text
           style={styles.links}
           category='h5'

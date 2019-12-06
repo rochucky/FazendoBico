@@ -11,7 +11,7 @@ import * as firebase from 'firebase'
 import firestore from 'firebase/firestore'
 import Colors from '../constants/Colors'
 
-export default class JobDescription extends React.Component {
+export default class JobFreelancerInProgressDescription extends React.Component {
   static navigationOptions = {
     title: 'Detalhes'
   };
@@ -25,11 +25,7 @@ export default class JobDescription extends React.Component {
 
     this.item = this.props.navigation.getParam('item');
 
-    this.job = firebase.firestore().collection('jobs').doc(this.item.id);
-    firebase.firestore().collection('offers').where('job', '==', this.item.id).get()
-      .then((snap) => {
-        this.setState({offers: snap.size})
-      })
+    console.log(this.item);
     
 
   }
@@ -58,8 +54,8 @@ export default class JobDescription extends React.Component {
             <Text style={styles.description}>{this.item.data.address}, {this.item.data.number} - {this.item.data.neighborhood}</Text>
             <Text style={styles.label}>Cidade</Text>
             <Text style={styles.description}>{this.item.data.city} - {this.item.data.state}</Text>
-            <Text style={styles.label}>Freelancer</Text>
-            <Text style={styles.description}>{this.item.data.freelancer_name}</Text>
+            <Text style={styles.label}>Solicitante</Text>
+            <Text style={styles.description}>{this.item.data.owner}</Text>
           </Layout>
         </ScrollView>
         <Layout style={[styles.button, { backgroundColor: Colors.mainColor }]}>
@@ -84,7 +80,7 @@ export default class JobDescription extends React.Component {
   pay = () => {
     Alert.alert(
       'Pagar',
-      'Deseja reallizar o pagamento?', [{
+      'Deseja realizar o pagamento?', [{
           text: 'Cancelar',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel'

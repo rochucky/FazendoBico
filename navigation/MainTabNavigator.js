@@ -6,7 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import JobsFreelancerNavigator from './JobsFreelancerNavigator';
-import JobsInProgressNavigator from './JobsInProgressNavigator';
+import JobsFreelancerInProgressNavigator from './JobsFreelancerInProgressNavigator';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -44,7 +44,7 @@ JobsStack.navigationOptions = {
 };
 
 const JobsInProgressStack = createStackNavigator({
-  JobsInProgress: JobsInProgressNavigator,
+  JobsInProgress: JobsFreelancerInProgressNavigator,
 },{
   headerMode: 'none'
 });

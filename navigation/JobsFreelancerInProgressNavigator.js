@@ -1,16 +1,14 @@
 import React from 'react';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 
-import JobsInProgressScreen from '../screens/JobsInProgressScreen';
 import JobsFreelancerInProgressScreen from '../screens/JobsFreelancerInProgressScreen';
-import JobInProgressDescription from '../screens/JobInProgressDescription';
+import JobFreelancerInProgressDescription from '../screens/JobFreelancerInProgressDescription';
 import Chat from '../screens/Chat';
 
 const JobsInProgressNavigator = createStackNavigator(
 	{
-		JobsInProgressScreen: JobsInProgressScreen,
-		JobsFreelancerInProgressScreen: JobsFreelancerInProgressScreen,
-		JobDescription: JobInProgressDescription,
+		JobsInProgressScreen: JobsFreelancerInProgressScreen,
+		JobDescription: JobFreelancerInProgressDescription,
 		Chat: Chat
 	},
   {

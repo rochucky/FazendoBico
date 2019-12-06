@@ -1,9 +1,11 @@
 import React from 'react';
-import { StyleSheet, Image, KeyboardAvoidingView, AsyncStorage, ActivityIndicator, View, Picker } from 'react-native';
-import { Layout, Text, Button, Input } from 'react-native-ui-kitten';
+import { StyleSheet, Image, Keyboard, AsyncStorage, ActivityIndicator, View, Picker, ScrollView, Dimensions } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Layout, Text } from 'react-native-ui-kitten';
 import * as firebase from 'firebase';
 import firestore from 'firebase/firestore';
 import { SQLite } from 'expo-sqlite'
+import { Input, Button } from '../components/CustomComponents'
 
 
 const db = SQLite.openDatabase('bicos');
@@ -16,7 +18,8 @@ export default class Login extends React.Component {
       login: '',
       pass: '',
       type: '',
-      loading: true
+      loading: true,
+      screenHeight: Math.round(Dimensions.get('window').height)
     }
 
   }
@@ -34,45 +37,52 @@ export default class Login extends React.Component {
     else{
 
       return(
-        <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-          <Image style={styles.logo} source={require('../assets/images/tags.png')} />
-          {/* <Text style={styles.text} category='h4'>Welcome to UI Kitten</Text> */}
-          <Input 
-            style={styles.input}
-            placeholder='Login' 
-            onChangeText={(text) => this.setState({login: text})} 
-            value={this.state.login}
-          />
-          <Input 
-            style={styles.input}
-            placeholder='Senha' 
-            onChangeText={(text) => this.setState({pass: text})} 
-            value={this.state.pass}
-            secureTextEntry={true}
-          />
-          <Button 
-            style={styles.button}
-            onPress={this.Login.bind(this)}
-            title='Login' 
-          >Login</Button>
-          <Text 
-            style={styles.links}
-            category='h5'
-            status='info'
-            keyboardType="email-address"
-            onPress={() => {
-              this.props.navigation.navigate('ForgotPassword')
-            }}
-          >Esqueceu a senha?</Text>
-          <Text
-            style={styles.links}
-            category='h5'
-            status='info'
-            onPress={() => {
-              this.props.navigation.navigate('SignUp')
-            }}
-          >Cadastre-se</Text>
-        </KeyboardAvoidingView>
+        <View style={{height: this.state.screenHeight}}>
+          
+        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          <View style={styles.container}>
+            
+            <Image style={styles.logo} source={require('../assets/images/tags.png')} />
+            {/* <Text style={styles.text} category='h4'>Welcome to UI Kitten</Text> */}
+            <Input 
+              style={styles.input}
+              placeholder='Login' 
+              onChange={(text) => this.setState({login: text})} 
+              value={this.state.login}
+              textAlign='center'
+            />
+            <Input 
+              style={styles.input}
+              placeholder='Senha' 
+              onChange={(text) => this.setState({pass: text})} 
+              value={this.state.pass}
+              secureTextEntry={true}
+              textAlign='center'
+            />
+            <Button 
+              onPress={this.Login.bind(this)}
+              text='Entrar' 
+            />
+            <Text 
+              style={styles.links}
+              category='h5'
+              status='info'
+              keyboardType="email-address"
+              onPress={() => {
+                this.props.navigation.navigate('ForgotPassword')
+              }}
+            >Esqueceu a senha?</Text>
+            <Text
+              style={styles.links}
+              category='h5'
+              status='info'
+              onPress={() => {
+                this.props.navigation.navigate('SignUp')
+              }}
+            >Cadastre-se</Text>
+          </View>
+        </ScrollView>
+        </View>
       )
     }
   }
@@ -144,6 +154,13 @@ export default class Login extends React.Component {
     });
   }
 
+
+  keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',(e) => {
+    this.setState({screenHeight: this.state.screenHeight - e.endCoordinates.height})
+  });
+  keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',() => {
+    this.setState({screenHeight: Math.round(Dimensions.get('window').height) })
+  });
 
   Login = async () => {
     this.setState({loading: true});
