@@ -9,7 +9,7 @@ export default class Button extends React.Component {
 
 		this.text = this.props.text
 		this.fontColor = this.props.fontColor || 'white'
-		this.backgroundColor = this.props.backgroundColor || Colors.mainColor
+		this.backgroundColor = this.props.backgroundColor || Colors.primary
 		this.width = this.props.width || '100%'
 		this.fontSize = this.props.fontSize || 20
 		this.marginTop = this.props.marginTop || this.props.margin || 5
@@ -17,6 +17,11 @@ export default class Button extends React.Component {
 		this.marginRight = this.props.marginRight || this.props.margin || 0
 		this.marginLeft = this.props.marginLeft || this.props.margin || 0
 		this.bottom = this.props.bottom
+		if(this.props.type == 'secondary'){
+			this.backgroundColor = 'white'
+			this.fontColor = this.props.fontColor || Colors.primary
+			this.fontSize = 16
+		}
 	}
 
 	render() {
@@ -27,17 +32,17 @@ export default class Button extends React.Component {
 				marginBottom: this.marginBottom,
 				marginLeft: this.marginLeft,
 				marginRight: this.marginRight,
-				backgroundColor: this.backgroundColor,
-				bottom: 0
+				backgroundColor: this.backgroundColor
 			}]}>
 				<TouchableOpacity
 					style={[styles.button, {}]}
 					onPress={this.props.onPress}
 				>
 				<Text style={[styles.buttonText, {
-					color: this.fontColor
+					color: this.fontColor,
+					fontSize: this.fontSize
 				}]}>
-					{this.text.toUpperCase()}
+					{this.text}
 				</Text>
 				</TouchableOpacity>
 			</View>
@@ -50,9 +55,12 @@ export default class Button extends React.Component {
 const styles = StyleSheet.create({
 	buttonContainer: {
 		height: 50,
-		borderBottomWidth: 1.6,
-		borderRightWidth: 1.6,
-		borderColor: '#CCC'
+		borderBottomWidth: 1,
+		borderRightWidth: 1,
+		borderTopWidth: 0.3,
+		borderLeftWidth: 0.3,
+		borderColor: '#CCC',
+		elevation: 2
 	},
 	button: {
 		width: '100%',
@@ -62,7 +70,6 @@ const styles = StyleSheet.create({
 	},
 	buttonText: {
 		fontWeight: 'bold',
-		fontSize: 20,
 		letterSpacing: 1.4
 	}
 })

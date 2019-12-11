@@ -12,5 +12,8 @@ export default {
   noticeBackground: tintColor,
   noticeText: '#fff',
   mainColor: tintColor,
-  secondaryColor: '#B5D8F2'
+  primary: tintColor,
+  primaryDark: '#166BAC',
+  secondaryColor: '#B5D8F2',
+  secondary: '#B5D8F2'
 };

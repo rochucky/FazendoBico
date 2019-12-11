@@ -111,7 +111,7 @@ export default class HomeScreen extends React.Component {
   
   logout = () => {
     Alert.alert(
-      'Exit App',
+      'Logout',
       'Deseja fazer logout?', [{
           text: 'Cancelar',
           onPress: () => console.log('Cancel Pressed'),
@@ -124,6 +124,7 @@ export default class HomeScreen extends React.Component {
                 'delete from config'
               )
             })
+            BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
             NavigationService.navigate('Login')
           }
       }, ], {
@@ -162,7 +163,7 @@ export default class HomeScreen extends React.Component {
 
   handleBackButton = () => {
     Alert.alert(
-      'Exit App',
+      'Sair',
       'Deseja realmente Sair?', [{
           text: 'Cancelar',
           onPress: () => console.log('Cancel Pressed'),
@@ -189,6 +190,7 @@ export default class HomeScreen extends React.Component {
   componentWillUnmount() {
     this.focusListener.removeEventListener()
     this.blurListener.removeEventListener()
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
   }
   
 }

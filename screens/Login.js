@@ -62,24 +62,25 @@ export default class Login extends React.Component {
             <Button 
               onPress={this.Login.bind(this)}
               text='Entrar' 
+              marginTop={20}
             />
-            <Text 
-              style={styles.links}
-              category='h5'
-              status='info'
-              keyboardType="email-address"
+            <Button 
               onPress={() => {
                 this.props.navigation.navigate('ForgotPassword')
               }}
-            >Esqueceu a senha?</Text>
-            <Text
-              style={styles.links}
-              category='h5'
-              status='info'
+              text='Esqueceu a Senha?'
+              type='secondary'
+              fontSize={16}
+              marginTop={20}
+            />
+            <Button 
               onPress={() => {
                 this.props.navigation.navigate('SignUp')
               }}
-            >Cadastre-se</Text>
+              text='Cadastre-se'
+              type='secondary'
+              fontSize={16}
+            />
           </View>
         </ScrollView>
         </View>

@@ -15,39 +15,70 @@ export default class SignUp extends React.Component {
       pass: '',
       passConfirm: '',
       type: '',
-      screenHeight: Math.round(Dimensions.get('window').height)
+      screenHeight: Math.round(Dimensions.get('window').height),
+      step: 1
     }
     this.users = firebase.firestore().collection('users');
   }
 
-
   render(){
-    if(this.state.type == ''){
+    if(this.state.step == 1){
       return(
-        <View style={{height: this.state.screenHeight}}>
+        <View style={{height: this.state.screenHeight}} hide>
           <ScrollView contentContainerStyle={{flexGrow: 1}}>
             <View style={styles.container}>
-              <Image style={styles.logo} source={require('../assets/images/tags.png')} />
-              <Text style={styles.text} category='h4'>Cadastro</Text>
+              <Text style={styles.text} category='h4'>Primeiramente:</Text>
               <Button 
-                text='Sou um Cliente'
+                text='Cliente'
                 onPress={() => {
-                  this.setState({type: 'cliente'})
+                  this.setState({step: 2, type: 'cliente'})
                 }}
+                type='secondary'
               />
               <Button 
-                text='Sou um Freelancer'
+                text='Freelancer'
                 onPress={() => {
-                  this.setState({type: 'freelancer'})
+                  this.setState({step: 2, type: 'freelancer'})
                 }}
+                type='secondary'
               />
+              
+              <Text style={styles.text} category='p1'>Essa decisão poderá ser alterada após logar no app</Text>
             </View>
           </ScrollView>
         </View>
 
       )
     }
-    else{
+    else if(this.state.step == 2){
+      return(
+        <View style={{height: this.state.screenHeight}}>
+          <ScrollView contentContainerStyle={{flexGrow: 1}}>
+            <View style={styles.container}>
+              <Text style={styles.text} category='h4'>Qualo seu nome?</Text>
+              <Input 
+                style={styles.input}
+                placeholder='Nome Completo' 
+                onChange={(text) => this.setState({name: text})} 
+                value={this.state.name}
+                textAlign='center'
+              />
+              <Button 
+                text='Avançar'
+                ref="btnNext"
+                onPress={() => {
+                  this.setState({step: 3})
+                }}
+                type='secondary'
+              />
+              
+              <Text style={styles.text} category='p1'>Essa decisão poderá ser alterada após logar no app</Text>
+            </View>
+          </ScrollView>
+        </View>
+      )
+    }
+    else if(this.state.step == 3){
 
       return(
         <View style={{height: this.state.screenHeight}}>

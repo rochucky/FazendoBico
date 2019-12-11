@@ -23,8 +23,6 @@ export default class Main extends React.Component {
 		const {navigation} = this.props;
 		const usertype = navigation.getParam('type', 0);
 
-		console.log(usertype);
-
 		if(usertype == 'cliente'){
 			return(
 				<ClientTabNavigator screenProps={this.props.navigation}/>
@@ -32,7 +30,7 @@ export default class Main extends React.Component {
 		}
 		if(usertype == 'freelancer'){
 			return(
-				<MainTabNavigator />
+				<MainTabNavigator screenProps={this.props.navigation}/>
 			);	
 		}
 	}

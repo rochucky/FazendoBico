@@ -7,6 +7,8 @@ export default class Input extends React.Component {
 	constructor(props){
 		super(props)
 
+		this.customStyles = {}
+
 		this.color = this.props.color || Colors.mainColor
 		this.width = this.props.width || '100%'
 		this.textAlign = this.props.textAlign || 'left'
@@ -17,11 +19,14 @@ export default class Input extends React.Component {
 		this.marginBottom = this.props.marginBottom || this.props.margin || 5
 		this.marginRight = this.props.marginRight || this.props.margin || 5
 		this.marginLeft = this.props.marginLeft || this.props.margin || 5
+		if(this.props.backgroundColor){
+			this.customStyles.backgroundColor = this.props.backgroundColor
+		}
 	}
 
 	render() {
 		return(
-			<View style={[styles.inputContainer, {
+			<View style={[styles.inputContainer,this.customStyles, {
 				borderBottomColor: this.color,
 				width: this.width,
 				marginTop: this.marginTop,
@@ -34,8 +39,8 @@ export default class Input extends React.Component {
 						textAlign: this.textAlign,
 						fontSize: this.fontSize,
 						color: this.color,
-						keyboardType: this.type
 					}]}
+					keyboardType={this.type}
 					placeholder={this.props.placeholder}
 		      onChangeText={this.props.onChange} 
 		      value={this.props.value}

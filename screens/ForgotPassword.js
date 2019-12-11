@@ -22,22 +22,22 @@ export default class ForgotPassword extends React.Component {
         <Input 
           placeholder='Email'
           type="email-address"
-          onChange={(text) => this.setState({email: text})} 
+          onChange={(text) => this.setState({email: text})}
           value={this.state.email}
           textAlign='center'
         />
         <Button 
           onPress={this.reset.bind(this)}
-          text='Enviar' 
+          text='Enviar'
+          marginTop={20}
         />
-        <Text
-          style={styles.links}
-          category='h5'
-          status='info'
+        <Button 
           onPress={() => {
             this.props.navigation.goBack()
           }}
-        >Voltar</Text>
+          text='< Voltar'
+          type='secondary'
+        />
       </KeyboardAvoidingView>
     )
   }
