@@ -39,7 +39,7 @@ export default class First extends React.Component {
               text='Freelancer'
               onPress={() => {
                 this.setState({type: 'freelancer'}, () => {
-                  this.props.navigation.navigate('Third',{...this.state})
+                  this.props.navigation.navigate('Profession',{...this.state})
                 })
               }}
               type='secondary'

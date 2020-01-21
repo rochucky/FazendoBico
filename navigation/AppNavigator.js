@@ -10,7 +10,9 @@ import Second from '../screens/SignUp/Second'
 import Third from '../screens/SignUp/Third'
 import Forth from '../screens/SignUp/Forth'
 import Fifth from '../screens/SignUp/Fifth'
+import Sixth from '../screens/SignUp/Sixth'
 import Last from '../screens/SignUp/Last'
+import Profession from '../screens/SignUp/Profession'
 
 const AppNavigator = createStackNavigator(
 	{
@@ -22,7 +24,9 @@ const AppNavigator = createStackNavigator(
 		Third: Third,
 		Forth: Forth,
 		Fifth: Fifth,
-		Last: Last
+		Sixth: Sixth,
+		Last: Last,
+		Profession: Profession
 	},
   {
 	initialRouteName: "Login",

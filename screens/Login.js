@@ -107,6 +107,8 @@ export default class Login extends React.Component {
                     await AsyncStorage.setItem('name', doc.data().name)
                     await AsyncStorage.setItem('type', doc.data().type)
                     await AsyncStorage.setItem('email', doc.data().email)
+                    await AsyncStorage.setItem('profession', doc.data().profession)
+                    await AsyncStorage.setItem('image', doc.data().image)
                     await AsyncStorage.setItem('id', doc.id);
                     this.setState({pass: ''});
                     this.props.navigation.navigate('Main', {type: doc.data().type})
@@ -182,6 +184,8 @@ export default class Login extends React.Component {
               await AsyncStorage.setItem('name', doc.data().name)
               await AsyncStorage.setItem('type', doc.data().type)
               await AsyncStorage.setItem('email', doc.data().email)
+              await AsyncStorage.setItem('profession', doc.data().profession)
+              await AsyncStorage.setItem('image', doc.data().image)
               this.setState({pass: ''});
               this.props.navigation.navigate('Main', {type: doc.data().type})
           });
@@ -201,7 +205,6 @@ export default class Login extends React.Component {
       if(err == 'Error: The password is invalid or the user does not have a password.'){
         alert('Senha incorreta');
         this.setState({loading: false});
-
       }
       if(err == 'Error: There is no user record corresponding to this identifier. The user may have been deleted.'){
         alert('Usuário não existe, por favor verifique o login e senha novamente');

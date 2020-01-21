@@ -32,7 +32,7 @@ export default class Third extends React.Component {
             <Text style={styles.text}>Você pode nos informar seu email?</Text>
             <Input 
               style={styles.input}
-              placeholder='' 
+              placeholder='Digite aqui'
               onChange={(text) => this.setState({email: text})}
               value={this.state.email}
               textAlign='center'
@@ -47,7 +47,9 @@ export default class Third extends React.Component {
                 <Button 
                   text='Avançar'
                   ref="btnNext"
-                  onPress={this.Next.bind(this)}
+                  onPress={() => {
+                    this.setState({'email': this.state.email.toLowerCase()}, this.Next.bind(this))
+                  }}
                   type='secondary'
                 />
               )

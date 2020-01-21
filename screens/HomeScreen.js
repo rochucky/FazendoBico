@@ -8,11 +8,13 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Alert,
-  BackHandler
+  BackHandler,
+  Modal,
+  View
 } from 'react-native'
 import { NavigationActions, StackActions } from 'react-navigation'
 import NavigationService from '../navigation/NavigationService'
-import { Layout, Text } from 'react-native-ui-kitten'
+import { Text } from 'react-native-ui-kitten'
 import { SQLite } from 'expo-sqlite'
 import { FontAwesome } from '@expo/vector-icons'
 import * as firebase from 'firebase'
@@ -41,14 +43,16 @@ export default class HomeScreen extends React.Component {
       name: '',
       type: '',
       id: '',
+      modalVisible: false,
       loading: true
     }
 
-    AsyncStorage.multiGet(['name','type','id'])
+    AsyncStorage.multiGet(['name','type','id', 'image'])
       .then((items) => {
         this.setState({name: items[0][1]})
         this.setState({type: items[1][1]})
         this.setState({id: items[2][1]})
+        this.setState({image: items[3][1]})
         this.setState({loading: false})
       })
       .then(() => {
@@ -57,29 +61,51 @@ export default class HomeScreen extends React.Component {
 
   }
 
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
+
   render(){
     if(this.state.loading == true){
       return(
-        <Layout style={styles.loadingContainer}>
+        <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#0000ff" />
-        </Layout>
+        </View>
       )
     }
     else{
 
       return(
-        <Layout style={styles.container}>
-            <Image style={styles.thumb} source={{uri: 'http://img.clipartlook.com/super-mario-face-clipart-1-super-mario-clipart-520_386.jpg'}} />
+        <View style={styles.container}>
+          <Modal
+          animationType="fade"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            this.setModalVisible(!this.state.modalVisible)
+          }}>
+            <View style={styles.modal}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setModalVisible(!this.state.modalVisible)
+                }}>
+                <Image style={styles.pic} source={{uri: this.state.image}} />
+              </TouchableOpacity>
+            </View>
+          </Modal>
+          <TouchableOpacity onPress={() => this.setModalVisible(true)}>
+            <Image style={styles.thumb} source={{uri: this.state.image}} />
+          </TouchableOpacity>
           <Text
             style={styles.name}
             category='h4'
           >{this.state.name}</Text>
-          <Layout style={styles.usertype}>
+          <View style={styles.usertype}>
             <Text
               style={{paddingRight: 10}}
               category='h6'
             >{this.state.type.toUpperCase()}</Text>
-            <Layout style={[styles.change, {backgroundColor: '#cc0000'}]}>
+            <View style={[styles.change, {backgroundColor: '#cc0000'}]}>
               <TouchableOpacity 
                 onPress={this.changeUserType.bind(this)}
               >
@@ -89,9 +115,9 @@ export default class HomeScreen extends React.Component {
                   color="white"
                 />
               </TouchableOpacity>
-            </Layout>
-          </Layout>
-          <Layout style={styles.logout}>
+            </View>
+          </View>
+          <View style={styles.logout}>
             <TouchableWithoutFeedback
               onPress={() => {
                 this.logout()
@@ -102,8 +128,8 @@ export default class HomeScreen extends React.Component {
                 name={'power-off'} 
               />
             </TouchableWithoutFeedback>
-          </Layout>
-        </Layout>
+          </View>
+        </View>
       )
     }
 
@@ -219,6 +245,10 @@ const styles = StyleSheet.create({
     borderRadius: 150 / 2,
     overflow: "hidden",
   },
+  pic: {
+    width: 320,
+    height: 320,
+  },
   logout: {
     position: "absolute",
     top: 10,
@@ -239,5 +269,13 @@ const styles = StyleSheet.create({
     width:30,
     height:30,
     borderRadius:15
+  },
+  modal: {
+    flex: 1,
+    flexDirection:'column',
+    alignItems:'center',
+    justifyContent:'center',
+    paddingLeft: 20,
+    paddingRight: 20
   }
 })

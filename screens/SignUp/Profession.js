@@ -3,17 +3,17 @@ import { StyleSheet, Image, KeyboardAvoidingView, Dimensions, Keyboard, View, Sc
 import { Layout } from 'react-native-ui-kitten';
 import * as firebase from 'firebase';
 import firestore from 'firebase/firestore';
-import { Button, Input } from '../../components/CustomComponents'
+import { Button, Select } from '../../components/CustomComponents'
 import Colors from '../../constants/Colors'
 
 import NetInfo from '@react-native-community/netinfo'
 
-export default class Forth extends React.Component {
+export default class Profession extends React.Component {
 
   constructor (props) {
     super(props)
     this.state = {
-      passConfirm: '',
+      profession: '',
       loading: false,
       ...this.props.navigation.state.params
     }
@@ -30,15 +30,13 @@ export default class Forth extends React.Component {
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
           <View style={styles.container}>
             <Text style={styles.bigText}>{this.state.name.split(' ')[0]}</Text>
-            <Text style={styles.text}>Digite a senha novamente:</Text>
-            <Input 
+            <Text style={styles.text}>Qual a sua profissão?</Text>
+            <Select
               style={styles.input}
-              placeholder='Digite aqui'
-              onChange={(text) => this.setState({passConfirm: text})}
-              value={this.state.passConfirm}
+              onChange={(text,index) => this.setState({profession: text})}
+              value={this.state.profession}
               textAlign='center'
               color='white'
-              secureTextEntry={true}
             />
             {this.state.error &&
               <Text style={{color: 'red', textAlign: 'center'}}>{this.state.errorMessage}</Text>
@@ -69,9 +67,7 @@ export default class Forth extends React.Component {
               )
               
             }
-            
-            <Text style={{color: 'white'}}>*A Senha deve ter pelo menos 6 caracteres entre números e letras</Text>
-            <Text style={styles.steps}>....<Text style={{color: Colors.primaryDark}}>.</Text>.</Text>
+            <Text style={styles.steps}>.<Text style={{color: Colors.primaryDark}}>.</Text>....</Text>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -79,17 +75,13 @@ export default class Forth extends React.Component {
   }
 
   Next = () => {
-    if(this.state.passConfirm == ''){
-      this.setState({error: true, errorMessage: 'Obrigatório o preenchimento da confirmação de senha'})
-    }
-    else if(this.state.passConfirm != this.state.pass){
-      this.setState({error: true, errorMessage: 'Confirmação e senha são diferentes'})
+    if(this.state.profession == ''){
+      this.setState({error: true, errorMessage: 'Selecione uma profissão'})
     }
     else{
       this.setState({error: false, errorMessage: ''}, () => {
-        this.props.navigation.navigate('Sixth', {...this.state})
+        this.props.navigation.navigate('Third', {...this.state})
       })
-      
     }
   }
 }

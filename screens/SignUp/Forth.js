@@ -30,7 +30,7 @@ export default class Forth extends React.Component {
             <Text style={styles.text}>Digite uma Senha</Text>
             <Input 
               style={styles.input}
-              placeholder='' 
+              placeholder='Digite aqui'
               onChange={(text) => this.setState({pass: text})}
               value={this.state.pass}
               textAlign='center'

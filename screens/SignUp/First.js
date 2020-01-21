@@ -27,7 +27,7 @@ export default class Second extends React.Component {
             <Text style={styles.text}>Vamos começar com seu nome:</Text>
             <Input 
               style={styles.input}
-              placeholder='' 
+              placeholder='Digite aqui'
               onChange={(text) => this.setState({name: text})}
               value={this.state.name}
               textAlign='center'
