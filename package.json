@@ -25,6 +25,7 @@
     "firebase": "^6.6.0",
     "react": "16.8.3",
     "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
+    "react-native-google-places-autocomplete": "^1.4.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
     "react-native-ui-kitten": "^4.1.1",
     "react-navigation": "^3.8.1"

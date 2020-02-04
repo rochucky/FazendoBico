@@ -13,7 +13,6 @@ export default class Profession extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      profession: '',
       loading: false,
       ...this.props.navigation.state.params
     }

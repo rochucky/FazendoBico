@@ -1,0 +1,50 @@
+Como cliente eu preciso ter condições de encerrar o bico. Não tem hoje na tela de andamento do job.
+
+￼
+
+Na parte de detalhe do job, aparece o nome do profissional, criar um link para abrir o profile do profissional 
+
+￼
+
+
+Precisamos criar o perfil completo nos 2 tipos de perfil, seguindo com a usabilidade, quando eu abrir o profile precisamos apresentar serviços anteriores realizados. Tipo um face book das fotos e criarmos o processo de avaliação.
+
+Bom
+Ruim
+Recomendaria 
+Descrição 
+
+Para isso, precisamos ter o controle de liberar ou não os comentários e deletar.
+
+￼
+
+
+O chat sempre ativo é fantástico, porque vai funcionar bem na substituição do WhatsApp (Privacidade)
+
+Perfil do cliente 
+Nome 
+Descrição dos serviços 
+Foto opcional 
+Dados de endereço opcional 
+
+Precisamos definir as profissões iniciais do app. 
+
+Marketing - Como selecionar pessoas ? Como ser lembrado pelas pessoas do app ?
+
+Dashboard para acompanhar tudo o que foi cadastrado, tudo o que foi acordado.
+
+Site explicando o que é 
+
+Site para poder cadastrar e se candidatar 
+
+Filtros para buscar bicos
+Data inicial e final
+Região
+Status 
+
+No cadastro do freelancer, tenho que dizer qual é a minha profissao
+
+
+Notificações de mensagens dos chat.
+
+Fábrica de sonhos - ideia de ajudar o pequeno empreendedor , desenvolvimento de sistemas , planos de marketing , mídias sociais , propaganda , marketing

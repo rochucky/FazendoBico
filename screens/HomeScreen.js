@@ -19,6 +19,7 @@ import { SQLite } from 'expo-sqlite'
 import { FontAwesome } from '@expo/vector-icons'
 import * as firebase from 'firebase'
 import firestore from 'firebase/firestore'
+import { ImageModal } from '../components/CustomComponents'
 
 import Colors from '../constants/Colors'
 
@@ -43,17 +44,18 @@ export default class HomeScreen extends React.Component {
       name: '',
       type: '',
       id: '',
+      image: '',
       modalVisible: false,
       loading: true
     }
 
     AsyncStorage.multiGet(['name','type','id', 'image'])
-      .then((items) => {
-        this.setState({name: items[0][1]})
-        this.setState({type: items[1][1]})
-        this.setState({id: items[2][1]})
-        this.setState({image: items[3][1]})
-        this.setState({loading: false})
+      .then( async (items) => {
+        await this.setState({name: items[0][1]})
+        await this.setState({type: items[1][1]})
+        await this.setState({id: items[2][1]})
+        await this.setState({image: items[3][1]})
+        await this.setState({loading: false})
       })
       .then(() => {
         this.user = firebase.firestore().collection('users').doc(this.state.id)
@@ -77,22 +79,7 @@ export default class HomeScreen extends React.Component {
 
       return(
         <View style={styles.container}>
-          <Modal
-          animationType="fade"
-          transparent={true}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            this.setModalVisible(!this.state.modalVisible)
-          }}>
-            <View style={styles.modal}>
-              <TouchableOpacity
-                onPress={() => {
-                  this.setModalVisible(!this.state.modalVisible)
-                }}>
-                <Image style={styles.pic} source={{uri: this.state.image}} />
-              </TouchableOpacity>
-            </View>
-          </Modal>
+          <ImageModal modalVisible={this.state.modalVisible} image={this.state.image} setModalVisible={this.setModalVisible.bind(this)}></ImageModal>
           <TouchableOpacity onPress={() => this.setModalVisible(true)}>
             <Image style={styles.thumb} source={{uri: this.state.image}} />
           </TouchableOpacity>
@@ -276,6 +263,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
     justifyContent:'center',
     paddingLeft: 20,
-    paddingRight: 20
+    paddingRight: 20,
+    backgroundColor: 'rgba(10,10,10,0.7)'
   }
 })

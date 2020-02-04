@@ -1,5 +1,6 @@
 import Input from './Input'
 import Button from './Button'
-import Select from './Picker'
+import Select from './Select'
+import ImageModal from './ImageModal'
 
-export {Input, Button, Select}
+export {Input, Button, Select, ImageModal}

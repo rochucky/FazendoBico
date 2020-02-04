@@ -11,7 +11,6 @@ export default class Forth extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      pass: '',
       ...this.props.navigation.state.params
     }
     this.users = firebase.firestore().collection('users');

@@ -12,6 +12,12 @@ export default class Second extends React.Component {
     super(props)
     this.state = {
       name: '',
+      type: '',
+      profession: '',
+      email: '',
+      pass: '',
+      passConfirm: '',
+      image: require('../assets/images/no-image.png'),
       error: false,
       errorMessage: ''
     }

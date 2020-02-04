@@ -16,12 +16,14 @@ export default class Sixth extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      image: require('../assets/images/no-image.png'),
       loading: false,
       ...this.props.navigation.state.params
     }
-    this.users = firebase.firestore().collection('users');
+    this.users = firebase.firestore().collection('users')
     this.images = firebase.firestore().collection('images')
+
+    this.blob = '';
+    this.url = '';
   }
 
   render(){
@@ -41,11 +43,16 @@ export default class Sixth extends React.Component {
               <Text style={{color: 'red', textAlign: 'center'}}>{this.state.errorMessage}</Text>
             }
 
-            <Button 
-              text='Tirar Foto'
-              onPress={this.picture.bind(this)}
-              type='secondary'
-            />
+            {this.state.loading ? (
+                <View></View>
+              ) : (
+                <Button 
+                  text='Tirar Foto'
+                  onPress={this.picture.bind(this)}
+                  type='secondary'
+                />
+              )
+            }
 
             {this.state.loading ? (
                 <ActivityIndicator size="large" color="white" />  
@@ -94,25 +101,9 @@ export default class Sixth extends React.Component {
     })
     if(!result.cancelled){
       let response = await fetch(result.uri)
-      let blob = await response.blob()
-      let date = new Date()
-      let filename = this.state.email + '_' + date.getFullYear() + (date.getMonth() + 1) + date.getDate() + date.getHours() + date.getMinutes() + date.getSeconds() + '.jpg'
-      firebase.storage().ref().child(filename).put(blob)
-        .then( async (snap) => {
-          let url = await snap.ref.getDownloadURL()
-          // if(!this.state.images[0].uri){
-          //   this.setState({ images: [] })
-          // }
-          // let images = this.state.images
-          // images.push({uri: url, job: this.item.id, name: filename })
-          // this.setState({ images: images })
-          // this.images.add({uri: url, job: this.item.id, name: filename })
-          this.setState({image: {uri: url}});
-        })
-        .catch((err) => {
-          alert('Falha ao carregar arquivo!')
-          console.log(err)
-        })
+      this.blob = await response.blob()
+    
+      this.setState({image: {uri: result.uri}});
     }
   }
 
@@ -134,32 +125,44 @@ export default class Sixth extends React.Component {
     return true
   }
 
-  Next = () => {
-    if(this.state.passConfirm == ''){
-      this.setState({error: true, errorMessage: 'Obrigatório o preenchimento da confirmação de senha'})
+  Next = async () => {
+    if(this.blob == ''){
+      this.setState({error: true, errorMessage: 'A foto é obrigatória'})
     }
     else if(this.state.passConfirm != this.state.pass){
       this.setState({error: true, errorMessage: 'Confirmação e senha são diferentes'})
     }
-    else{
-      this.setState({error: false, errorMessage: '', loading: true}, () => {
+    else{      
+      this.setState({error: false, errorMessage: '', loading: true}, async () => {
+        
+        
         firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.pass).then((response) => {
-          this.users.add({
-            name: this.state.name,
-            email: this.state.email,
-            type: this.state.type,
-            image: this.state.image.uri,
-            profession: this.state.profession || ''
-          })
-          .then((result) => {
-            this.setState({error: false, errorMessage: ''}, () => {
-             this.props.navigation.navigate('Last', {...this.state})
+          let date = new Date()
+          let filename = this.state.email + '_' + date.getFullYear() + (date.getMonth() + 1) + date.getDate() + date.getHours() + date.getMinutes() + date.getSeconds() + '.jpg'
+          firebase.storage().ref().child(filename).put(this.blob)
+            .then( async (snap) => {
+            this.url = await snap.ref.getDownloadURL()
+            this.users.add({
+              name: this.state.name,
+              email: this.state.email,
+              type: this.state.type,
+              image: this.url,
+              profession: this.state.profession || ''
+            })
+            .then((result) => {
+              this.setState({error: false, errorMessage: '', loading: false}, () => {
+               this.props.navigation.navigate('Last', {...this.state})
+              })
+            })
+            .catch((err) => {
+              alert('Falha ao carregar arquivo!')
+              console.log(err)
             })
           })
-          .catch((err) => {
-            alert(err);
-          })
-        });
+        })
+        .catch((err) => {
+          alert(err);
+        })
       })
       
     }

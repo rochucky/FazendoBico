@@ -13,7 +13,6 @@ export default class Forth extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      passConfirm: '',
       loading: false,
       ...this.props.navigation.state.params
     }

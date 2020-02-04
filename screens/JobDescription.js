@@ -1,7 +1,6 @@
 import React from 'react'
-import { ScrollView, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Alert, Platform, Modal, Image } from 'react-native'
+import { View, ScrollView, StyleSheet, KeyboardAvoidingView, TouchableOpacity, Alert, Platform, Image } from 'react-native'
 import {
-  Layout,
 	Text,
 	Input,
 	Button
@@ -9,6 +8,8 @@ import {
 import { FontAwesome } from '@expo/vector-icons'
 import * as firebase from 'firebase'
 import firestore from 'firebase/firestore'
+
+import { ImageModal } from '../components/CustomComponents'
 
 import * as ImagePicker from 'expo-image-picker'
 import * as Permissions from 'expo-permissions'
@@ -24,6 +25,8 @@ export default class JobDescription extends React.Component {
     this.state = {
      offers: '',
      images: [],
+     iamge: '',
+     modalVisible: false
     }
 
 		this.item = this.props.navigation.getParam('item')
@@ -52,16 +55,20 @@ export default class JobDescription extends React.Component {
 
   }
 
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
+
   render() {
     return (
-      <Layout style={styles.container}>
+      <View style={styles.container}>
         <ScrollView>
-          <Layout style={styles.titleContainer}>
+          <View style={styles.titleContainer}>
     				<Text 
     					style={styles.title}
     					category='h3'
     				>{this.item.data.title}</Text>
-            <Layout style={[styles.button, {backgroundColor: '#FFFFFF', top: 10, right: 15, height: 40, width: 40}]}>
+            <View style={[styles.button, {backgroundColor: '#FFFFFF', top: 10, right: 15, height: 40, width: 40}]}>
               <TouchableOpacity 
                 onPress={() => {
                   this.props.navigation.navigate('JobOffersScreen', {item: this.item})
@@ -72,32 +79,42 @@ export default class JobDescription extends React.Component {
                   color= 'white'
                 >{this.state.offers}</Text>
               </TouchableOpacity>
-            </Layout>
+            </View>
     				<Text 
     					style={styles.value}
     					category='h6'
     				>R$ {this.item.data.value}</Text>
-          </Layout>
-          <Layout style={styles.bodyContainer}>
+          </View>
+          <View style={styles.bodyContainer}>
+            <ImageModal 
+              modalVisible={this.state.modalVisible} 
+              image={this.state.image} 
+              setModalVisible={this.setModalVisible.bind(this)}
+            ></ImageModal>
             <Text style={styles.label}>Descrição</Text>
     				<Text style={styles.description}>{this.item.data.description}</Text>
             <Text style={styles.label}>Endereço</Text>
             <Text style={styles.description}>{this.item.data.address}, {this.item.data.number} - {this.item.data.neighborhood}</Text>
             <Text style={styles.label}>Cidade</Text>
             <Text style={styles.description}>{this.item.data.city} - {this.item.data.state}</Text>
-          </Layout>
-          <Layout style={styles.imgContainer}>
+          </View>
+          <View style={styles.imgContainer}>
             {this.state.images.map(image => {
               return(
-                <Image
-                  style={styles.image}
-                  source={ image }
-                />
+                <TouchableOpacity style={styles.image} onPress={ async () => {
+                  await this.setState({image: image.uri})
+                  this.setModalVisible(true)
+                }}>
+                  <Image
+                    style={{width: '100%', height: '100%'}}
+                    source={ image }
+                  />
+                </TouchableOpacity>
               )
             })}
-          </Layout>
+          </View>
   			</ScrollView>
-        <Layout style={[styles.button, {backgroundColor: '#4da6ff'}]}>
+        <View style={[styles.button, {backgroundColor: '#4da6ff'}]}>
           <TouchableOpacity 
             onPress={this.edit.bind(this)}
           >
@@ -108,8 +125,8 @@ export default class JobDescription extends React.Component {
             />
           </TouchableOpacity>
           
-        </Layout>
-        <Layout style={[styles.button, {backgroundColor: '#cc0000', right: 100}]}>
+        </View>
+        <View style={[styles.button, {backgroundColor: '#cc0000', right: 100}]}>
           <TouchableOpacity 
             onPress={this.delete.bind(this)}
           >
@@ -119,8 +136,8 @@ export default class JobDescription extends React.Component {
               color="white"
             />
           </TouchableOpacity>
-        </Layout>
-        <Layout style={[styles.button, {backgroundColor: '#4da6ff', bottom: 100}]}>
+        </View>
+        <View style={[styles.button, {backgroundColor: '#4da6ff', bottom: 100}]}>
           <TouchableOpacity 
             onPress={this.picture.bind(this)}
           >
@@ -130,8 +147,8 @@ export default class JobDescription extends React.Component {
               color="white"
             />
           </TouchableOpacity>
-        </Layout>
-      </Layout>
+        </View>
+      </View>
     )
 	}
 

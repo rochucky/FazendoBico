@@ -13,7 +13,6 @@ export default class Third extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      email: '',
       ...this.props.navigation.state.params
     }
     this.users = firebase.firestore().collection('users');

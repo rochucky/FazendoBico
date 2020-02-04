@@ -10,7 +10,6 @@ export default class First extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      type: '',
       ...this.props.navigation.state.params
     }
     this.users = firebase.firestore().collection('users');
