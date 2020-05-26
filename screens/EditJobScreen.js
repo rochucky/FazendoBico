@@ -3,9 +3,9 @@ import { ScrollView, StyleSheet, KeyboardAvoidingView, AsyncStorage, Picker, Vie
 import {
   Layout,
 	Text,
-	Input,
-	Button
+	Input
 } from 'react-native-ui-kitten';
+import { Button } from '../components/CustomComponents'
 import * as firebase from 'firebase'
 import firestore from 'firebase/firestore';
 
@@ -40,7 +40,7 @@ export default class EditJobScreen extends React.Component {
   render() {
     return (
 				<KeyboardAvoidingView
-					style={[styles.container, {paddingBottom: this.state.padding}]}
+					style={styles.container}
 					enabled
 				>
 					<ScrollView>
@@ -155,7 +155,7 @@ export default class EditJobScreen extends React.Component {
 						/>
 						<Button 
 							style={styles.button}
-							title='Gravar'
+							text='Gravar'
 							onPress={this.updateJob.bind(this)}
 						>Gravar</Button>
 					</ScrollView>
@@ -163,13 +163,6 @@ export default class EditJobScreen extends React.Component {
 			
     )
 	}
-	
-	keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',(e) => {
-		this.setState({padding: e.endCoordinates.height + 30})
-	});
-	keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',() => {
-		this.setState({padding: 0})
-	});
 	
 	updateJob = async () => {
 		
@@ -190,7 +183,7 @@ export default class EditJobScreen extends React.Component {
 		this.job.update({
 			title: this.state.title,
 			description: this.state.description,
-			value: text = parseFloat(this.state.value.replace(',','.')).toFixed(2),
+			value: parseFloat(this.state.value.replace(',','.')).toFixed(2),
 			city: this.state.city,
 			state: this.state.state,
 			address: this.state.address,

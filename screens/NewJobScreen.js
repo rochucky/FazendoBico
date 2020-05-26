@@ -3,9 +3,10 @@ import { ScrollView, StyleSheet, KeyboardAvoidingView, AsyncStorage, Picker, Vie
 import {
   Layout,
 	Text,
-	Input,
-	Button
+	Input
 } from 'react-native-ui-kitten';
+
+import { Button } from '../components/CustomComponents'
 import * as firebase from 'firebase'
 import firestore from 'firebase/firestore';
 
@@ -34,7 +35,6 @@ export default class NewJobScreen extends React.Component {
 			offers: [],
 			padding: 0,
 			name: '',
-			screenHeight: Math.round(Dimensions.get('window').height),
 			containerHeight: '100%'
 		}
 		
@@ -52,11 +52,11 @@ export default class NewJobScreen extends React.Component {
 
   render() {
     return (
-				<View
-					style={{height: this.state.containerHeight}}
+				<KeyboardAvoidingView
+					style={styles.container}
 				>
 					<ScrollView>
-						<View style={styles.container}>
+						<View>
 							
 							<Text
 								style={styles.label}
@@ -173,16 +173,14 @@ export default class NewJobScreen extends React.Component {
 									/>
 								</View>	
 								)
-							}
-								
+							};
 							<Button 
-								style={styles.button}
-								title='Criar'
+								text='Criar'
 								onPress={this.createJob.bind(this)}
 							>Gravar</Button>
 						</View>
 					</ScrollView>
-				</View>
+				</KeyboardAvoidingView>
 			
     )
 	}
@@ -211,15 +209,6 @@ export default class NewJobScreen extends React.Component {
 			})
 	}
 	
-	keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',(e) => {
-    // this.setState({screenHeight: this.state.screenHeight - e.endCoordinates.height})
-    this.setState({containerHeight: (100 - Math.ceil((e.endCoordinates.height*100) / ((this.state.screenHeight < 750) ? this.state.screenHeight : (this.state.screenHeight - 100)))) + '%'})
-
-  });
-  keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',() => {
-    // this.setState({screenHeight: Math.round(Dimensions.get('window').height) })
-   	this.setState({containerHeight: '100%' })
-  });
 	
 	createJob = async () => {
 		
@@ -240,7 +229,7 @@ export default class NewJobScreen extends React.Component {
 		this.jobs.add({
 			title: this.state.title,
 			description: this.state.description,
-			value: text = parseFloat(this.state.value.replace(',','.')).toFixed(2),
+			value: parseFloat(this.state.value.replace(',','.')).toFixed(2),
 			city: this.state.city,
 			state: this.state.state,
 			address: this.state.address,
@@ -266,7 +255,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		marginTop: 10,
-		marginBottom: 100,
 		paddingRight: 15,
 		paddingLeft: 15,
 	},

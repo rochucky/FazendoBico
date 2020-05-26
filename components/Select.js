@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Picker, StyleSheet, TextInput } from 'react-native';
+import { View, Picker, StyleSheet, TextInput, Text } from 'react-native';
 import Colors from '../constants/Colors'
 
 export default class Select extends React.Component {
@@ -11,6 +11,7 @@ export default class Select extends React.Component {
 
 		this.picker = React.createRef()
 		this.showPicker = this.showPicker.bind(this)
+		this.options = this.props.options
 
 		this.color = this.props.color || Colors.mainColor
 		this.width = this.props.width || '100%'
@@ -41,6 +42,11 @@ export default class Select extends React.Component {
 				marginLeft: this.marginLeft,
 				marginRight: this.marginRight
 			}]}>
+				<Text style={[styles.label,  {
+					color: this.color
+				}]}>
+					Teste
+				</Text>
 				<TextInput
 					style={[styles.input, {
 						textAlign: this.textAlign,
@@ -50,9 +56,9 @@ export default class Select extends React.Component {
 					keyboardType={this.type}
 					placeholder={'Selecionar'}
 					enabled={false}
-		      onChangeText={this.props.onChange} 
-		      value={this.props.value}
-		      secureTextEntry={this.secureText}
+		      		onChangeText={this.props.onChange} 
+		      		value={this.props.value}
+		      		secureTextEntry={this.secureText}
 				/>
 				<Picker
 					selectedValue={this.props.value}
@@ -60,9 +66,11 @@ export default class Select extends React.Component {
 				  		position: 'absolute', 
 				  		width: '200%', 
 				  		left: '-100%'}}
-				  onValueChange={this.props.onChange}>
-				  <Picker.Item label="Java" value="Java" />
-				  <Picker.Item label="JavaScript" value="JavaScript" />
+				  onValueChange={this.props.onChange}>{
+				  	this.options.map((option) => {
+				  		<Picker.Item label={option.label} value={option.value} />
+				  	})
+				  }
 				</Picker>
 			</View>
 		)
@@ -79,5 +87,8 @@ const styles = StyleSheet.create({
 	},
 	input: {
 		width: '100%',
+	},
+	label: {
+		width: '100%'
 	}
 })

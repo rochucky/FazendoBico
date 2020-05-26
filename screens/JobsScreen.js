@@ -92,7 +92,7 @@ export default class JobsScreen extends React.Component {
           }
         />
         <Button
-          text='Criar'
+          text='Criar novo bico'
           marginBottom={0}
           onPress={() => {
             this.props.navigation.push('NewJobScreen');
@@ -137,11 +137,6 @@ const styles = StyleSheet.create({
   },
   listItemTitle: {
     paddingBottom: 5
-  },
-  btnNew: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%'
   }
 
 });

@@ -40,6 +40,8 @@ export default class Chat extends React.Component {
     this.job = this.props.navigation.getParam('job')
     this.job_id = this.props.navigation.getParam('job_id')
 
+    this.unsubscribeMessages = () => {}
+
     AsyncStorage.getItem('email', (err, email) => {
       if(this.job.owner == email){
         this.setState({'me': this.job.owner_name, 'you': this.job.freelancer_name}, () => this.props.navigation.setParams({'Header': this.state.you}))
@@ -52,8 +54,8 @@ export default class Chat extends React.Component {
 
     this.chats = firebase.firestore().collection('chats')
 
-    NetInfo.isConnected.fetch().done((isConnected) =>{
-      if(isConnected){
+    NetInfo.fetch().then(state =>{
+      if(state.isConnected){
 
         this.chats.where('owner', '==',this.job.owner)
           .where('freelancer','==',this.job.freelancer)
@@ -182,8 +184,8 @@ export default class Chat extends React.Component {
   }
 
   send = () => {
-    NetInfo.isConnected.fetch().done((isConnected) =>{
-      if(isConnected){
+    NetInfo.fetch().then(state =>{
+      if(state.isConnected){
         let date = new Date().getTime()
         let messageData = {
           chat: this.chat,
@@ -202,13 +204,6 @@ export default class Chat extends React.Component {
     })
     
   }
-
-  keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',(e) => {
-    this.setState({containerHeight: (100 - Math.ceil((e.endCoordinates.height*100) / ((this.state.screenHeight < 750) ? this.state.screenHeight : (this.state.screenHeight - 100)))) + '%'})
-  });
-  keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',() => {
-    this.setState({containerHeight: '100%' })
-  });
 
 }
 

@@ -84,7 +84,7 @@ export default class Third extends React.Component {
     }
     else{
       this.setState({error: false, errorMessage: '', loading: true}, () => {
-        NetInfo.isConnected.fetch().done((isConnected) =>{
+        NetInfo.fetch().then(({isConnected}) =>{
           if(isConnected){
             this.users.where('email', '==', this.state.email).get()
               .then(snap => {

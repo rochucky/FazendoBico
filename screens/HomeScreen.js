@@ -15,7 +15,7 @@ import {
 import { NavigationActions, StackActions } from 'react-navigation'
 import NavigationService from '../navigation/NavigationService'
 import { Text } from 'react-native-ui-kitten'
-import { SQLite } from 'expo-sqlite'
+import * as SQLite from 'expo-sqlite'
 import { FontAwesome } from '@expo/vector-icons'
 import * as firebase from 'firebase'
 import firestore from 'firebase/firestore'

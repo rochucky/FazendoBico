@@ -60,13 +60,6 @@ export default class First extends React.Component {
     )
   
   }
-
-  keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',(e) => {
-    this.setState({screenHeight: this.state.screenHeight - e.endCoordinates.height})
-  });
-  keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',() => {
-    this.setState({screenHeight: Math.round(Dimensions.get('window').height) })
-  });
 }
 
 

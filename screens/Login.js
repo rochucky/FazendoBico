@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Image, Keyboard, AsyncStorage, ActivityIndicator, View, Picker, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, Image, Keyboard, AsyncStorage, ActivityIndicator, View, Picker, ScrollView, Dimensions, KeyboardAvoidingView } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Layout, Text } from 'react-native-ui-kitten';
 import * as firebase from 'firebase';
 import firestore from 'firebase/firestore';
-import { SQLite } from 'expo-sqlite'
+import * as SQLite  from 'expo-sqlite'
 import { Input, Button } from '../components/CustomComponents'
 
 
@@ -37,7 +37,7 @@ export default class Login extends React.Component {
     else{
 
       return(
-        <View style={{height: this.state.screenHeight}}>
+        <KeyboardAvoidingView style={{height: this.state.screenHeight}}>
           
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
           <View style={styles.container}>
@@ -83,7 +83,7 @@ export default class Login extends React.Component {
             />
           </View>
         </ScrollView>
-        </View>
+        </KeyboardAvoidingView>
       )
     }
   }
@@ -156,14 +156,6 @@ export default class Login extends React.Component {
       });
     });
   }
-
-
-  keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',(e) => {
-    this.setState({screenHeight: this.state.screenHeight - e.endCoordinates.height})
-  });
-  keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',() => {
-    this.setState({screenHeight: Math.round(Dimensions.get('window').height) })
-  });
 
   Login = async () => {
     this.setState({loading: true});
