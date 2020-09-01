@@ -4,12 +4,15 @@ import { createStackNavigator, createBottomTabNavigator, createAppContainer } fr
 import { FontAwesome } from '@expo/vector-icons';
 
 import TabBarIcon from '../components/TabBarIcon';
+import HomeNavigator from './HomeNavigator';
 import HomeScreen from '../screens/HomeScreen';
 import JobsNavigator from './JobsNavigator';
 import JobsInProgressNavigator from './JobsInProgressNavigator';
 
 const HomeStack = createStackNavigator({
-  Home: HomeScreen,
+  Home: HomeNavigator,
+},{
+  headerMode: 'none'
 });
 
 HomeStack.navigationOptions = {

@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
 		borderTopWidth: 0.3,
 		borderLeftWidth: 0.3,
 		borderColor: '#CCC',
-		elevation: 2
+		elevation: 2,
+		borderRadius: 5
 	},
 	button: {
 		width: '100%',

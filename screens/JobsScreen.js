@@ -91,12 +91,14 @@ export default class JobsScreen extends React.Component {
             />
           }
         />
-        <Button
-          text='Criar novo bico'
-          marginBottom={0}
-          onPress={() => {
-            this.props.navigation.push('NewJobScreen');
-          }} />
+        <Layout style={styles.buttonContainer}>
+          <Button
+            text='Criar novo bico'
+            marginBottom={0}
+            onPress={() => {
+              this.props.navigation.push('NewJobScreen');
+            }} />
+        </Layout>
       </Layout>
     )
   }
@@ -137,6 +139,10 @@ const styles = StyleSheet.create({
   },
   listItemTitle: {
     paddingBottom: 5
+  },
+  buttonContainer: {
+    paddingLeft: 10,
+    paddingRight: 10
   }
 
 });

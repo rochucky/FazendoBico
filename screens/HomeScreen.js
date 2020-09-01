@@ -12,16 +12,14 @@ import {
   Modal,
   View
 } from 'react-native'
-import { NavigationActions, StackActions } from 'react-navigation'
-import NavigationService from '../navigation/NavigationService'
-import { Text } from 'react-native-ui-kitten'
-import * as SQLite from 'expo-sqlite'
-import { FontAwesome } from '@expo/vector-icons'
-import * as firebase from 'firebase'
-import firestore from 'firebase/firestore'
-import { ImageModal } from '../components/CustomComponents'
-
-import Colors from '../constants/Colors'
+import { NavigationActions, StackActions } from 'react-navigation';
+import NavigationService from '../navigation/NavigationService';
+import { Text } from 'react-native-ui-kitten';
+import * as SQLite from 'expo-sqlite';
+import { FontAwesome } from '@expo/vector-icons';
+import * as firebase from 'firebase';
+import firestore from 'firebase/firestore';
+import { ImageModal, Button } from '../components/CustomComponents';
 
 YellowBox.ignoreWarnings(['Setting a timer'])
 
@@ -30,11 +28,7 @@ const db = SQLite.openDatabase('bicos')
 export default class HomeScreen extends React.Component {
 
   static navigationOptions = {
-    title: 'Bicos',
-    headerStyle: {
-      backgroundColor: '#1899DA',
-    },
-    headerTintColor: '#fff',
+    title: 'Bicos'
   }
 
   constructor(props){
@@ -45,16 +39,25 @@ export default class HomeScreen extends React.Component {
       type: '',
       id: '',
       image: '',
+      email: '',
+      proofession: '',
       modalVisible: false,
       loading: true
     }
 
-    AsyncStorage.multiGet(['name','type','id', 'image'])
+    this.type_alias = {
+      'freelancer': 'Freelancer',
+      'cliente': 'Cliente'
+    };
+
+    AsyncStorage.multiGet(['name','type','id', 'image', 'email', 'profession'])
       .then( async (items) => {
         await this.setState({name: items[0][1]})
         await this.setState({type: items[1][1]})
         await this.setState({id: items[2][1]})
         await this.setState({image: items[3][1]})
+        await this.setState({email: items[4][1]})
+        await this.setState({profession: items[5][1]})
         await this.setState({loading: false})
       })
       .then(() => {
@@ -81,29 +84,51 @@ export default class HomeScreen extends React.Component {
         <View style={styles.container}>
           <ImageModal modalVisible={this.state.modalVisible} image={this.state.image} setModalVisible={this.setModalVisible.bind(this)}></ImageModal>
           <TouchableOpacity onPress={() => this.setModalVisible(true)}>
-            <Image style={styles.thumb} source={{uri: this.state.image}} />
+            {this.state.image == '' ?
+            (
+              <View style={styles.thumb}>               
+                  <FontAwesome 
+                    size={150}
+                    name={'user-circle'}
+                    color="gray"
+                  />
+              </View>
+            ):
+            (
+              <Image style={styles.thumb} source={{uri: this.state.image}} />
+            )
+            }
           </TouchableOpacity>
+          <Text style={styles.title}>NOME</Text>
           <Text
             style={styles.name}
             category='h4'
           >{this.state.name}</Text>
-          <View style={styles.usertype}>
-            <Text
-              style={{paddingRight: 10}}
-              category='h6'
-            >{this.state.type.toUpperCase()}</Text>
-            <View style={[styles.change, {backgroundColor: '#cc0000'}]}>
-              <TouchableOpacity 
-                onPress={this.changeUserType.bind(this)}
-              >
-                <FontAwesome 
-                  size={20}
-                  name={'exchange'}
-                  color="white"
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <Text style={styles.title}>EMAIL</Text>
+          <Text
+            style={styles.name}
+            category='h4'
+          >{this.state.email}</Text>
+          <Text style={styles.title}>PROFISSÃO</Text>
+          <Text
+            style={styles.name}
+            category='h4'
+          >{this.state.profession || 'Não Informada'}</Text>
+          <Text style={styles.title}>TIPO</Text>
+          <Text
+            style={styles.name}
+            category='h4'
+          >{this.type_alias[this.state.type]}</Text>
+          <Button 
+          type="secondary"
+            text="Alternar Tipo"
+            onPress={this.changeUserType.bind(this)}
+          />
+          <Button 
+          type="secondary"
+            text="Editar Perfil"
+            onPress={() => {this.props.navigation.push('ProfileEdit')}}
+          />
           <View style={styles.logout}>
             <TouchableWithoutFeedback
               onPress={() => {
@@ -148,21 +173,24 @@ export default class HomeScreen extends React.Component {
   }
 
   changeUserType = () => {
+    let tipo;
+    if(this.state.type == 'cliente'){
+      tipo = 'freelancer'
+    }
+    else{
+      tipo = 'cliente'
+    }
     Alert.alert(
       'Trocar',
-      'Deseja alternar o tipo de usuário?', [{
+      'Deseja alternar o tipo de usuário para '+ this.type_alias[tipo] +'?', [{
           text: 'Cancelar',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel'
       }, {
           text: 'OK',
           onPress: () => {
-            let newType = 'cliente'
-            if(this.state.type == 'cliente'){
-              newType = 'freelancer'
-            }
             this.user.update({
-              type: newType
+              type: tipo
             })
             .then(() => {
               NavigationService.navigate('Login')
@@ -225,8 +253,8 @@ const styles = StyleSheet.create({
     paddingRight: 20
   },
   thumb: {
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 50,
+    marginBottom: 50,
     width: 150,
     height: 150,
     borderRadius: 150 / 2,
@@ -242,6 +270,10 @@ const styles = StyleSheet.create({
     right: 10
   },
   name: {
+    color: "#aaa",
+    marginBottom: 10
+  },
+  title: {
     color: "#1899DA"
   },
   usertype: {

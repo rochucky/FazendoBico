@@ -97,7 +97,6 @@ export default class Login extends React.Component {
           (_, {rows}) => {
             // alert('Ok');
             if(rows.length == 1){
-              console.log(rows);
               firebase.auth().signInWithEmailAndPassword(rows._array[0].email.toLowerCase(), rows._array[0].pass)
               .then(async (user) => {
                 firebase.firestore().collection('users').where('email', '==', rows._array[0].email.toLowerCase()).get()

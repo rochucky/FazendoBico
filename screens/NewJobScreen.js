@@ -173,7 +173,7 @@ export default class NewJobScreen extends React.Component {
 									/>
 								</View>	
 								)
-							};
+							}
 							<Button 
 								text='Criar'
 								onPress={this.createJob.bind(this)}
