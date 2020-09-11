@@ -124,11 +124,6 @@ export default class HomeScreen extends React.Component {
             text="Alternar Tipo"
             onPress={this.changeUserType.bind(this)}
           />
-          <Button 
-          type="secondary"
-            text="Editar Perfil"
-            onPress={() => {this.props.navigation.push('ProfileEdit')}}
-          />
           <View style={styles.logout}>
             <TouchableWithoutFeedback
               onPress={() => {

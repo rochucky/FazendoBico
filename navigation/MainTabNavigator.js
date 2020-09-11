@@ -5,6 +5,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import HomeNavigator from './HomeNavigator';
 import JobsFreelancerNavigator from './JobsFreelancerNavigator';
 import JobsFreelancerInProgressNavigator from './JobsFreelancerInProgressNavigator';
+import AdminNavigator from './AdminNavigator';
 
 const HomeStack = createStackNavigator({
   Home: HomeNavigator
@@ -61,10 +62,29 @@ JobsInProgressStack.navigationOptions = {
   tabBarOptions: { activeTintColor:'#1899DA' }
 };
 
+const AdminStack = createStackNavigator({
+  Admin: AdminNavigator,
+},{
+  headerMode: 'none'
+});
+
+AdminStack.navigationOptions = {
+  tabBarLabel: 'Admin',
+  tabBarIcon: ({ focused }) => (
+    <FontAwesome 
+      size={32}
+      name={'users'}
+      color={focused ? "#1899DA" : 'grey'}
+    />
+  ),
+  tabBarOptions: { activeTintColor:'#1899DA' }
+};
+
 const Tabs = createBottomTabNavigator({
   HomeStack,
   JobsStack,
   JobsInProgressStack,
+  AdminStack
 });
 
 export default createAppContainer(Tabs);

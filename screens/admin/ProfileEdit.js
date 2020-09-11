@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, AsyncStorage, Picker, Alert, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 
-import NavigationService from '../navigation/NavigationService';
+import NavigationService from '../../navigation/NavigationService';
 import * as firebase from 'firebase';
 import firestore from 'firebase/firestore';
 
@@ -14,7 +14,7 @@ import {
   Input
 } from 'react-native-ui-kitten';
 
-import { Button } from '../components/CustomComponents';
+import { Button } from '../../components/CustomComponents';
 
 export default class ProfileEdit extends React.Component {
 
@@ -34,6 +34,7 @@ export default class ProfileEdit extends React.Component {
       imgRef: '',
       oldImage: '',
       proofession: '',
+      professionsArray: [],
       modalVisible: false,
       loading: true,
       saving: false
@@ -53,10 +54,18 @@ export default class ProfileEdit extends React.Component {
         await this.setState({oldImage: items[3][1]})
         await this.setState({email: items[4][1]})
         await this.setState({profession: items[5][1]})
-        await this.setState({loading: false})
+        // await this.setState({loading: false})
       })
       .then( async () => {
         this.user = firebase.firestore().collection('users').doc(this.state.id)
+        await firebase.firestore().collection('professions').get()
+          .then(querySnapshot => {
+            var professions = []
+            querySnapshot.forEach(doc => {
+              professions.push({id: doc.id, ...doc.data()})
+            })
+            this.setState({professionsArray: professions, loading: false});
+          })
       })
       .catch((err) => {
         console.log(err);
@@ -118,9 +127,9 @@ export default class ProfileEdit extends React.Component {
                 this.setState({profession: itemValue})
               }>
               <Picker.Item label="" value="" />
-              <Picker.Item label="Pedreiro" value="Pedreiro" />
-              <Picker.Item label="Pintor" value="Pintor" />
-              <Picker.Item label="JavaScript" value="JavaScript" />
+              {this.state.professionsArray.map((item,index) => {
+                return <Picker.Item label={item.name} value={item.name} key={item.id} />
+              })}
             </Picker>
           </View>
           {this.state.saving == true ?
@@ -262,7 +271,8 @@ const styles = StyleSheet.create({
 		backgroundColor: '#f7f9fc',
 		borderColor: '#edf1f7',
 		borderWidth: 1,
-		borderRadius: 5
+    borderRadius: 5,
+    marginBottom: 10
 	},
 	picker: {
 		width: '100%'

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, FlatList, TouchableWithoutFeedback, AsyncStorage, RefreshControl } from 'react-native';
+import { ScrollView, StyleSheet, FlatList, TouchableWithoutFeedback, AsyncStorage, RefreshControl, Image } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 import {
   Layout,
@@ -31,10 +31,24 @@ export default class JobsScreen extends React.Component {
         .then((querySnapshot) => {
           const items = []
           querySnapshot.forEach((doc) => {
-            items.push({id: doc.id, data: doc.data()});
+            firebase.firestore().collection('images').where('job', '==', doc.id).limit(1).get()
+              .then((imagesSnapshot) => {
+                if(imagesSnapshot.size > 0){
+                  imagesSnapshot.forEach((img) => {
+                    items.push({id: doc.id, data: doc.data(), thumb: img.data().uri});
+                  });
+                }
+                else{
+                  items.push({id: doc.id, data: doc.data(), thumb: ''});
+                }
+              })
+              .then(() => {
+                this.setState({items: items})
+                this.setState({refreshing: false})
+              })
+            
           })
-          this.setState({items: items})
-          this.setState({refreshing: false})
+          
         })
 
       })
@@ -66,16 +80,37 @@ export default class JobsScreen extends React.Component {
                 }}
               >
                 <Layout style={styles.listItem}>
-                  <Layout style={styles.listItemHeader}>
-                    <Text 
-                      style={styles.listItemTitle}
-                      category='h5'
-                    >{item.data.title}</Text>
-                    <Text 
-                      style={styles.listItemTitle}
-                      category='h5'
-                    >{item.data.value}</Text>
-                  </Layout>
+                  {item.thumb !== '' ?
+                    (
+                      <Layout>
+                        <Text 
+                          style={styles.listItemTitle}
+                          category='h5'
+                        >{item.data.title}</Text>
+                        <Layout style={styles.thumb}>
+                          <Image source={{uri: item.thumb}} style={styles.thumb}/>
+                        </Layout>
+                        <Layout style={styles.listItemHeader}>
+                          <Text 
+                            style={styles.listItemTitle}
+                            category='h5'
+                            >R$ {item.data.value}</Text>
+                        </Layout>
+                      </Layout>
+                    ):(
+                        
+                        <Layout style={styles.listItemHeader}>
+                          <Text 
+                            style={styles.listItemTitle}
+                            category='h5'
+                          >{item.data.title}</Text>
+                          <Text 
+                            style={styles.listItemTitle}
+                            category='h5'
+                            >R$ {item.data.value}</Text>
+                        </Layout>
+                    )
+                  }
                   <Text style={styles.listItemDescription}>{item.data.description}</Text>
                 </Layout>
               </TouchableWithoutFeedback>
@@ -109,10 +144,24 @@ export default class JobsScreen extends React.Component {
     .then((querySnapshot) => {
       const items = []
       querySnapshot.forEach((doc) => {
-          items.push({id: doc.id, data: doc.data()})
+        firebase.firestore().collection('images').where('job', '==', doc.id).limit(1).get()
+          .then((imagesSnapshot) => {
+            if(imagesSnapshot.size > 0){
+              imagesSnapshot.forEach((img) => {
+                items.push({id: doc.id, data: doc.data(), thumb: img.data().uri});
+              });
+            }
+            else{
+              items.push({id: doc.id, data: doc.data(), thumb: ''});
+            }
+          })
+          .then(() => {
+            this.setState({items: items})
+            this.setState({refreshing: false})
+          })
+        
       })
-      this.setState({items: items});
-      this.setState({refreshing: false});
+      
     })
   }
 }
@@ -122,27 +171,37 @@ const styles = StyleSheet.create({
     flex: 1
   },
   listItem: {
-    
+    flex: 1,
+    marginTop: 10,
+    marginBottom: 10,
     marginRight: 15,
     marginLeft: 15,
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 10,
     paddingBottom: 10,
-    borderBottomWidth: 1
+    elevation: 2,
+    backgroundColor: 'rgba(230, 255, 255, 0.3)'
     
   },
   listItemHeader: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    backgroundColor: 'rgba(230, 255, 255, 0.3)'
   },
   listItemTitle: {
-    paddingBottom: 5
+    paddingBottom: 5,
+    fontWeight: 'bold',
+    backgroundColor: 'rgba(230, 255, 255, 0.3)'
   },
   buttonContainer: {
     paddingLeft: 10,
     paddingRight: 10
+  },
+  thumb: {
+    width: '100%',
+    aspectRatio: 3/2
   }
 
 });
