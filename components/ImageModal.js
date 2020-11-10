@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, TextInput, StyleSheet, Modal, Image, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, Modal, Image, TouchableOpacity, Text, Alert } from 'react-native';
 import Colors from '../constants/Colors'
+import { FontAwesome } from '@expo/vector-icons'
 
 export default class ImageModal extends React.Component {
 	
@@ -22,17 +23,59 @@ export default class ImageModal extends React.Component {
         this.props.setModalVisible(!this.props.modalVisible)
       }}>
         <View style={styles.modal}>
-          <TouchableOpacity
-            onPress={() => {
-              this.props.setModalVisible(!this.props.modalVisible)
-            }}>
             <Image style={styles.pic} source={{uri: this.props.image}} />
-          </TouchableOpacity>
-        </View>
+            <View style={styles.actionContainer}>
+
+              <TouchableOpacity 
+                onPress={() => {
+                  this.props.setModalVisible(!this.props.modalVisible)
+                }}
+                style={styles.action}
+              >
+                <FontAwesome 
+                  size={40}
+                  name={'arrow-left'}
+                  color="white"
+                />
+              </TouchableOpacity>
+              {
+                this.props.deletable &&
+                <TouchableOpacity 
+                  onPress={this.delete.bind(this)}
+                  style={styles.action}
+                >
+                  <FontAwesome 
+                    size={40}
+                    name={'trash'}
+                    color="white"
+                    />
+                </TouchableOpacity>
+              }
+            </View>
+          </View>
       </Modal>
 		)
 
-	}
+  }
+  
+  delete = async () => {
+    Alert.alert(
+      'Excluir Imagem?',
+      "Deseja realmente excluir esta foto?",
+      [
+        {
+          text: 'Sim',
+          onPress: async () => {
+            alert('Foi!')
+          }
+        },
+        {
+          text: 'Não'
+        }
+      ]
+    )
+  }
+
 }
 
 
@@ -49,5 +92,14 @@ const styles = StyleSheet.create({
   pic: {
     width: 320,
     height: 320,
+  },
+  actionContainer: {
+    flex: 0,
+    flexDirection: 'row'
+  },
+  action: {
+    marginTop: 30,
+    marginRight: 50,
+    marginLeft: 50
   }
 })
