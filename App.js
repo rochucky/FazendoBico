@@ -6,6 +6,8 @@ import NavigationService from './navigation/NavigationService';
 import * as firebase from 'firebase';
 import {YellowBox} from 'react-native';
 
+
+
 YellowBox.ignoreWarnings(['Setting a timer']);
 
 const firebaseConfig = {
