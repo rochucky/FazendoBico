@@ -11,14 +11,14 @@ import {YellowBox} from 'react-native';
 YellowBox.ignoreWarnings(['Setting a timer']);
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDiT8YtegjnnksnNLhMIOPATE2A9r2EOaA",
-    databaseURL: "https://procurase-bc443.firebaseio.com",
-    authDomain: "procurase-bc443.firebaseapp.com",
-    projectId: "procurase-bc443",
-    storageBucket: "procurase-bc443.appspot.com",
-    messagingSenderId: "34580308812",
-    appId: "1:34580308812:web:c3f32d6733edea727225e9",
-    measurementId: "G-7G14DVM0DV"
+    apiKey: "",
+    databaseURL: "",
+    authDomain: "",
+    projectId: "3",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: "",
+    measurementId: ""
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
